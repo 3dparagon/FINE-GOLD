@@ -1,0 +1,224 @@
+/* ===== GLOBAL ===== */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at top, #2f2f2f 0%, #1f1f1f 45%, #141414 100%);
+  color: #f5c76a;
+}
+
+.app {
+  max-width: 420px;
+  margin: auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  padding-bottom: 20px;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: #1e1e1e;
+  padding: 12px 15px;
+  border-bottom: 1px solid #2a2a2a;
+  display: flex;
+  justify-content: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* ===== CARD ===== */
+.card {
+  padding: 15px;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+/* ===== MAIN 999 ===== */
+.main999 {
+  border: 2px solid #f5c76a;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background: rgba(245, 199, 106, 0.08);
+}
+
+.divider {
+  height: 1px;
+  background: #444;
+  margin-bottom: 12px;
+}
+
+/* ===== LIST ===== */
+.list .item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #f5c76a;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  opacity: 0.55;
+}
+
+.item.active {
+  opacity: 1;
+  box-shadow: 0 0 0 2px rgba(245, 199, 106, 0.35);
+}
+
+.left {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.probe {
+  font-weight: 800;
+}
+
+.karat {
+  font-size: 12px;
+  color: #c9c9c9;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.inputRow {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.massInput {
+  width: 140px;
+  background: transparent;
+  border: 1px solid #f5c76a;
+  color: #f5c76a;
+  padding: 6px 8px;
+  border-radius: 6px;
+  text-align: right;
+}
+
+.massInput[readonly] {
+  opacity: 0.55;
+}
+
+.unit {
+  font-size: 12px;
+  color: #c9c9c9;
+}
+
+.subvalue {
+  font-size: 12px;
+  color: #c9c9c9;
+  text-align: right;
+}
+
+/* ===== PRICE PANEL ===== */
+.priceCard {
+  margin-top: 14px;
+  background: #1e1e1e;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.footerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.currency {
+  display: flex;
+  gap: 8px;
+}
+
+.cur {
+  background: transparent;
+  border: 1px solid #f5c76a;
+  color: #f5c76a;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.cur.active {
+  background: #f5c76a;
+  color: #2b2b2b;
+}
+
+.reset {
+  border-color: #aaa;
+  color: #aaa;
+}
+
+.live {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  white-space: nowrap;
+  font-size: 12px;
+  color: #c9c9c9;
+}
+
+.live strong {
+  color: #f5c76a;
+}
+
+/* ===== PRICE LINES ===== */
+.price-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.price-line.total {
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 360px) {
+  .footerTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
