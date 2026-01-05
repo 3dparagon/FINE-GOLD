@@ -1,122 +1,150 @@
 body{
   margin:0;
-  font-family: Arial, sans-serif;
-  background:#1b1b1b;
+  font-family:Arial,sans-serif;
+  background: radial-gradient(circle at top, #2f2f2f 0%, #1f1f1f 45%, #141414 100%);
   color:#f5c76a;
 }
 
 .app{
   max-width:420px;
   margin:auto;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
+.content{ flex:1; padding-bottom:10px; }
+
+/* header */
 .header{
+  background:#1e1e1e;
+  padding:12px 15px;
+  border-bottom:1px solid #2a2a2a;
+  display:flex;
+  justify-content:center;
+}
+
+.brand{
   display:flex;
   align-items:center;
-  justify-content:center;
-  gap:8px;
-  padding:12px;
-  background:#1e1e1e;
+  gap:10px;
 }
 
+/* ✅ логотип больше, чем буква F */
 .logo{
-  width:26px;
-  height:26px;
+  width:34px;
+  height:34px;
+  object-fit:contain;
+  display:block;
 }
 
 .title{
   font-size:20px;
   font-weight:bold;
+  line-height:1;
 }
 
-.content{
-  padding:14px;
-}
+.card{ padding:15px; }
+h2{ margin:0 0 12px; }
 
-h2{
-  margin-top:0;
-}
-
-.item{
+.main999{
+  border:2px solid #f5c76a;
+  border-radius:12px;
+  padding:10px;
+  margin-bottom:14px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  border:1px solid #f5c76a;
-  border-radius:12px;
+  gap:12px;
+  background:rgba(245,199,106,.08);
+}
+
+.divider{ height:1px; background:#444; margin-bottom:12px; }
+
+.list .item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   padding:10px;
+  border:1px solid #f5c76a;
+  border-radius:10px;
   margin-bottom:10px;
   opacity:.55;
 }
 
 .item.active{
   opacity:1;
-  box-shadow:0 0 0 2px rgba(245,199,106,.3);
+  box-shadow:0 0 0 2px rgba(245,199,106,.35);
 }
 
-.left{
-  display:flex;
-  gap:8px;
-  align-items:baseline;
-}
-
-.karat{
-  font-size:12px;
-  color:#ccc;
-}
+.left{ display:flex; gap:10px; align-items:baseline; }
+.probe{ font-weight:800; }
+.karat{ font-size:12px; color:#c9c9c9; }
 
 .right{
-  text-align:right;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:5px;
 }
 
-input{
-  width:110px;
+.inputRow{ display:flex; gap:6px; align-items:center; }
+
+/* ✅ без 0.00, комфортный ввод */
+.massInput{
+  width:140px;
   background:transparent;
   border:1px solid #f5c76a;
   color:#f5c76a;
-  padding:6px;
+  padding:6px 8px;
   border-radius:6px;
   text-align:right;
 }
 
-.priceRow{
-  font-size:12px;
-  color:#ccc;
-  margin-top:4px;
-}
+.massInput[readonly]{ opacity:.55; }
 
+/* убираем стрелки у number на некоторых браузерах */
+.massInput::-webkit-outer-spin-button,
+.massInput::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
+
+.unit{ font-size:12px; color:#c9c9c9; }
+.subvalue{ font-size:12px; color:#c9c9c9; text-align:right; }
+
+/* price card */
 .priceCard{
   margin-top:14px;
   background:#1e1e1e;
-  border:1px solid #333;
+  border:1px solid #444;
   border-radius:12px;
   padding:12px;
 }
 
+.priceHeader{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.priceTitle{ margin:0; font-size:16px; font-weight:800; letter-spacing:.2px; }
+
+/* ✅ кнопки по центру */
 .controls{
   display:flex;
-  gap:8px;
+  justify-content:center;
+  gap:10px;
   margin-bottom:10px;
 }
 
-.btn{
+.cur{
   background:transparent;
   border:1px solid #f5c76a;
   color:#f5c76a;
-  padding:4px 10px;
+  padding:4px 12px;
   border-radius:6px;
+  cursor:pointer;
+  font-size:13px;
+  line-height:1;
 }
 
-.btn.active{
-  background:#f5c76a;
-  color:#222;
-}
+.cur.active{ background:#f5c76a; color:#2b2b2b; }
+.reset{ border-color:#aaa; color:#aaa; }
 
-.btn.reset{
-  border-color:#999;
-  color:#999;
-}
-
-.line{
+.price-line{
   display:flex;
   justify-content:space-between;
   font-size:13px;
@@ -126,13 +154,20 @@ input{
 .total{
   font-size:15px;
   font-weight:bold;
+  margin-top:8px;
 }
 
+/* Live update снизу */
 .liveBottom{
   margin-top:10px;
   padding-top:6px;
   border-top:1px solid #333;
-  text-align:center;
+  display:flex;
+  justify-content:center;
+  gap:6px;
   font-size:11px;
-  color:#aaa;
+  color:#c9c9c9;
+  white-space:nowrap;
 }
+
+.liveValue{ color:#f5c76a; font-weight:600; }
