@@ -1,79 +1,95 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Fine Gold</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#1e1e1e" />
+  <title>Fine Gold</title>
 
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="https://i.imgur.com/lerWRb0.png">
-
-  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="https://i.imgur.com/lerWRb0.png" />
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 
 <body>
-<div class="app">
-
-  <header class="header">
-    <img class="logo" src="https://i.imgur.com/lerWRb0.png" alt="Fine Gold">
-    <span class="title">Fine Gold</span>
-  </header>
-
-  <main class="content">
-    <h2>Calculation</h2>
-
-    <!-- 999 MAIN -->
-    <div class="item main active" data-probe="999.9">
-      <div class="left">
-        <span class="probe">999.9°</span>
-        <span class="karat">24K</span>
+  <div class="app">
+    <header class="header">
+      <div class="brand">
+        <img class="logo" src="https://i.imgur.com/lerWRb0.png" alt="Fine Gold logo" />
+        <span class="title">Fine Gold</span>
       </div>
-      <div class="right">
-        <input id="mainInput" type="number" step="0.01" value="0.00">
-        <span class="unit">g</span>
-        <div class="priceRow" id="mainPrice">— EUR / 1 g</div>
-      </div>
-    </div>
+    </header>
 
-    <div id="list"></div>
+    <main class="content">
+      <section class="card">
+        <h2>Calculation</h2>
 
-    <!-- PRICE PANEL -->
-    <div class="priceCard">
-      <div class="controls">
-        <button id="eurBtn" class="btn active">EUR</button>
-        <button id="usdBtn" class="btn">USD</button>
-        <button id="resetBtn" class="btn reset">Reset</button>
-      </div>
+        <!-- Главная проба 999.9 -->
+        <div class="main999" id="main999">
+          <div class="left">
+            <span class="probe">999.9°</span>
+            <span class="karat">24K</span>
+          </div>
 
-      <div class="line">
-        <span>Price / 1g (24K / 999.9):</span>
-        <strong id="pricePerGram">—</strong>
-      </div>
-      <div class="line">
-        <span>Weight (24K / 999.9):</span>
-        <strong id="eq999">0.00 g</strong>
-      </div>
-      <div class="line total">
-        <span>Total (24K / 999.9):</span>
-        <strong id="totalPrice">—</strong>
-      </div>
+          <div class="right">
+            <div class="inputRow">
+              <input id="main999Input" class="massInput" type="number" inputmode="decimal" step="any" placeholder="" />
+              <span class="unit">g</span>
+            </div>
+            <div id="main999Sub" class="subvalue">— EUR / 1 g</div>
+          </div>
+        </div>
 
-      <!-- LIVE UPDATE В САМОМ НИЗУ -->
-      <div class="liveBottom">
-        <span>Live update:</span>
-        <strong id="liveStamp">—</strong>
-      </div>
-    </div>
-  </main>
+        <div class="divider"></div>
 
-</div>
+        <!-- Список проб -->
+        <div class="list" id="list"></div>
 
-<script src="app.js"></script>
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
-}
-</script>
+        <!-- Плашка цены -->
+        <section class="priceCard">
+          <div class="priceHeader">
+            <h3 class="priceTitle">Price</h3>
+          </div>
+
+          <!-- Кнопки по центру -->
+          <div class="controls">
+            <button id="eurBtn" class="cur active">EUR</button>
+            <button id="usdBtn" class="cur">USD</button>
+            <button id="resetBtn" class="cur reset">Reset</button>
+          </div>
+
+          <div class="price-line">
+            <span>Price / 1g (24K / 999.9):</span>
+            <strong id="pricePerGram">—</strong>
+          </div>
+
+          <div class="price-line">
+            <span>Weight (24K / 999.9):</span>
+            <strong id="eq9999">0.00 g</strong>
+          </div>
+
+          <div class="price-line total">
+            <span>Total (24K / 999.9):</span>
+            <strong id="totalPrice">—</strong>
+          </div>
+
+          <!-- Live update в самом низу -->
+          <div class="liveBottom">
+            <span class="liveLabel">Live update:</span>
+            <strong id="liveStamp" class="liveValue">—</strong>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>
