@@ -1,0 +1,21 @@
+{
+  "name": "Fine Gold",
+  "short_name": "Fine Gold",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#141414",
+  "theme_color": "#1e1e1e",
+  "icons": [
+    {
+      "src": "https://i.imgur.com/lerWRb0.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.imgur.com/lerWRb0.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
