@@ -16,12 +16,21 @@
     <header class="header">
       <div class="brand">
         <img class="logo" src="https://i.imgur.com/lerWRb0.png" alt="Fine Gold logo" />
-        <span class="title">Fine Gold</span>
+        <div class="brandText">
+          <div class="title">Fine Gold</div>
+          <div class="subtitle">Gold mass calculator • 999.9</div>
+        </div>
+      </div>
+
+      <div class="topTabs" role="tablist" aria-label="Sections">
+        <button id="tabCalc" class="tabBtn active" type="button">Calculation</button>
+        <button id="tabBuy" class="tabBtn" type="button">Buy Gold</button>
       </div>
     </header>
 
     <main class="content">
-      <section class="card">
+      <!-- ====== CALC ====== -->
+      <section id="viewCalc" class="card view active">
         <h2>Calculation</h2>
 
         <!-- Главная проба 999.9 -->
@@ -51,11 +60,10 @@
             <h3 class="priceTitle">Price</h3>
           </div>
 
-          <!-- Кнопки по центру -->
           <div class="controls">
-            <button id="eurBtn" class="cur active">EUR</button>
-            <button id="usdBtn" class="cur">USD</button>
-            <button id="resetBtn" class="cur reset">Reset</button>
+            <button id="eurBtn" class="cur active" type="button">EUR</button>
+            <button id="usdBtn" class="cur" type="button">USD</button>
+            <button id="resetBtn" class="cur reset" type="button">Reset</button>
           </div>
 
           <div class="price-line">
@@ -73,12 +81,54 @@
             <strong id="totalPrice">—</strong>
           </div>
 
-          <!-- Live update внизу -->
           <div class="liveBottom">
             <span class="liveLabel">Live update:</span>
             <strong id="liveStamp" class="liveValue">—</strong>
           </div>
         </section>
+      </section>
+
+      <!-- ====== BUY GOLD ====== -->
+      <section id="viewBuy" class="card view">
+        <div class="buyHeader">
+          <h2 class="buyTitle">Buy Gold</h2>
+          <div class="badge">ONLY for Baltic (LT / LV / EE)</div>
+        </div>
+
+        <div id="balticGate" class="gateBox">
+          <div class="gateTitle">This section is available only for Baltic countries</div>
+          <div class="gateText">
+            LT / LV / EE. If you are outside the region, you can still contact us — we will confirm availability by phone.
+          </div>
+        </div>
+
+        <div class="buyCard">
+          <div class="buyRow">
+            <div class="buyLabel">Live price (24K / 999.9)</div>
+            <div class="buyValue" id="buyLivePrice">—</div>
+          </div>
+
+          <div class="buyRow">
+            <div class="buyLabel">Currency</div>
+            <div class="buyValue" id="buyCurrency">EUR</div>
+          </div>
+
+          <div class="buyNote">
+            Prices below are <b>estimated</b> (market price + dealer premium). Final price is confirmed by call/message.
+          </div>
+        </div>
+
+        <div class="shopList" id="shopList"></div>
+
+        <div class="contactBox">
+          <div class="contactTitle">Order / Consultation</div>
+          <div class="contactButtons">
+            <a id="tgBtn" class="cbtn" href="#" target="_blank" rel="noopener">Telegram</a>
+            <a id="waBtn" class="cbtn" href="#" target="_blank" rel="noopener">WhatsApp</a>
+            <a id="callBtn" class="cbtn outline" href="#">Call</a>
+          </div>
+          <div class="contactHint">No online payment. Order confirmed by phone.</div>
+        </div>
       </section>
     </main>
   </div>
