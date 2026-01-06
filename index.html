@@ -1,141 +1,174 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#1e1e1e" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fine Gold</title>
-
-  <link rel="manifest" href="./manifest.json" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-  <div class="app">
-    <header class="header">
-      <div class="brand">
-        <img class="logo" src="https://i.imgur.com/lerWRb0.png" alt="Fine Gold logo" />
-        <div class="brandText">
-          <div class="title">Fine Gold</div>
-          <div class="subtitle">Gold mass calculator • 999.9</div>
-        </div>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand">
+      <img src="https://i.imgur.com/lerWRb0.png" class="logo" alt="Fine Gold">
+      <div class="brandText">
+        <div class="title">Fine Gold</div>
+        <div class="subtitle">Gold mass calculator • 999.9</div>
       </div>
+    </div>
+  </header>
 
-      <!-- Кнопки в шапке (как сейчас) -->
-      <div class="topTabs" role="tablist">
-        <button id="tabCalc" class="tabBtn active" type="button">Calculation</button>
-        <button id="tabBuy" class="tabBtn" type="button">Buy Gold</button>
-      </div>
-    </header>
-
-    <main class="content">
-      <!-- ===== CALC VIEW ===== -->
-      <section id="viewCalc" class="card view active">
-        <h2 class="sectionTitle">Calculation</h2>
-
-        <!-- Главная проба 999.9 -->
-        <div class="main999 item active" data-probe="999.9" id="main999">
-          <div class="left">
-            <span class="probe">999.9°</span>
-            <span class="karat">24K</span>
-          </div>
-
-          <div class="right">
-            <div class="inputRow">
-              <input id="main999Input" class="massInput" type="number" inputmode="decimal" step="any" placeholder="" />
-              <span class="unit">g</span>
-            </div>
-            <div id="main999Sub" class="subvalue">— EUR / 1 g</div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- Остальные пробы -->
-        <div class="list" id="list"></div>
-
-        <!-- Плашка Price -->
-        <section class="priceCard">
-          <div class="priceHeader">
-            <h3 class="priceTitle">Price</h3>
-          </div>
-
-          <div class="controls">
-            <button id="eurBtn" class="cur active" type="button">EUR</button>
-            <button id="usdBtn" class="cur" type="button">USD</button>
-            <button id="resetBtn" class="cur reset" type="button">Reset</button>
-          </div>
-
-          <div class="price-line">
-            <span>Price / 1g (24K / 999.9):</span>
-            <strong id="pricePerGram">—</strong>
-          </div>
-
-          <div class="price-line">
-            <span>Weight (24K / 999.9):</span>
-            <strong id="eq9999">0.00 g</strong>
-          </div>
-
-          <div class="price-line total">
-            <span>Total (24K / 999.9):</span>
-            <strong id="totalPrice">—</strong>
-          </div>
-
-          <div class="liveBottom">
-            <span class="liveLabel">Live update:</span>
-            <strong id="liveStamp" class="liveValue">—</strong>
-          </div>
-        </section>
-      </section>
-
-      <!-- ===== BUY VIEW ===== -->
-      <section id="viewBuy" class="card view">
-        <div class="buyHeader">
-          <h2 class="sectionTitle">Buy Gold</h2>
-          <div class="badge">ONLY for Baltic (LT / LV / EE)</div>
-        </div>
-
-        <div id="balticGate" class="gateBox">
-          <div class="gateTitle">Available only for Baltic countries</div>
-          <div class="gateText">If you are outside LT/LV/EE, contact us — we will confirm availability by phone.</div>
-        </div>
-
-        <div class="buyCard">
-          <div class="buyRow">
-            <div class="buyLabel">Live price (24K / 999.9)</div>
-            <div class="buyValue" id="buyLivePrice">—</div>
-          </div>
-          <div class="buyRow">
-            <div class="buyLabel">Currency</div>
-            <div class="buyValue" id="buyCurrency">EUR</div>
-          </div>
-          <div class="buyNote">
-            Prices are <b>estimated</b>. Final price is confirmed by call/message. No online payment.
-          </div>
-        </div>
-
-        <div class="shopList" id="shopList"></div>
-
-        <div class="contactBox">
-          <div class="contactTitle">Order / Consultation</div>
-          <div class="contactButtons">
-            <a id="tgBtn" class="cbtn" href="#" target="_blank" rel="noopener">Telegram</a>
-            <a id="waBtn" class="cbtn" href="#" target="_blank" rel="noopener">WhatsApp</a>
-            <a id="callBtn" class="cbtn outline" href="#">Call</a>
-          </div>
-          <div class="contactHint">Order confirmed by phone.</div>
-        </div>
-      </section>
-    </main>
+  <!-- BUTTONS (НА МЕСТЕ CALCULATION) -->
+  <div class="topTabs">
+    <button class="tabBtn active" data-tab="calc">Calculation</button>
+    <button class="tabBtn" data-tab="buy">Buy Gold</button>
   </div>
 
-  <script src="./app.js"></script>
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-      });
-    }
-  </script>
+  <div class="content">
+
+    <!-- CALCULATION VIEW -->
+    <section class="view active" id="calc">
+
+      <div class="card">
+
+        <div class="list">
+
+          <div class="item">
+            <div class="left">
+              <div class="probe">999.9°</div>
+              <div class="karat">24K</div>
+            </div>
+            <div class="right">
+              <div class="inputRow">
+                <input class="massInput" type="number" step="any">
+                <span class="unit">g</span>
+              </div>
+              <div class="subvalue">— EUR / 1 g</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="left">
+              <div class="probe">958°</div>
+              <div class="karat">23K</div>
+            </div>
+            <div class="right">
+              <div class="inputRow">
+                <input class="massInput" type="number" step="any">
+                <span class="unit">g</span>
+              </div>
+              <div class="subvalue">— EUR / 1 g</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="left">
+              <div class="probe">750°</div>
+              <div class="karat">18K</div>
+            </div>
+            <div class="right">
+              <div class="inputRow">
+                <input class="massInput" type="number" step="any">
+                <span class="unit">g</span>
+              </div>
+              <div class="subvalue">— EUR / 1 g</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="left">
+              <div class="probe">585°</div>
+              <div class="karat">14K</div>
+            </div>
+            <div class="right">
+              <div class="inputRow">
+                <input class="massInput" type="number" step="any">
+                <span class="unit">g</span>
+              </div>
+              <div class="subvalue">— EUR / 1 g</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="left">
+              <div class="probe">417°</div>
+              <div class="karat">10K</div>
+            </div>
+            <div class="right">
+              <div class="inputRow">
+                <input class="massInput" type="number" step="any">
+                <span class="unit">g</span>
+              </div>
+              <div class="subvalue">— EUR / 1 g</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="left">
+              <div class="probe">375°</div>
+              <div class="karat">9K</div>
+            </div>
+            <div class="right">
+              <div class="inputRow">
+                <input class="massInput" type="number" step="any">
+                <span class="unit">g</span>
+              </div>
+              <div class="subvalue">— EUR / 1 g</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BUY GOLD VIEW -->
+    <section class="view" id="buy">
+      <div class="card">
+        <h2>Buy Gold</h2>
+
+        <div class="gateBox">
+          <div class="gateTitle">Only for Baltic countries</div>
+          <div class="gateText">
+            Gold bars purchase is available only by contact.<br>
+            Telegram or WhatsApp.
+          </div>
+        </div>
+
+        <div class="contactBox">
+          <div class="contactTitle">Contact us</div>
+          <div class="contactButtons">
+            <a href="https://t.me/yourname" class="cbtn">Telegram</a>
+            <a href="https://wa.me/37000000000" class="cbtn outline">WhatsApp</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+</div>
+
+<script>
+/* BUTTON LOGIC */
+const tabs = document.querySelectorAll('.tabBtn');
+const views = document.querySelectorAll('.view');
+
+tabs.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabs.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    views.forEach(v => v.classList.remove('active'));
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+</script>
+
 </body>
 </html>
