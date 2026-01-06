@@ -185,3 +185,28 @@ h2{ margin:0 0 12px; font-size:28px; }
 }
 
 .liveValue{ color:#f5c76a; font-weight:600; }
+/* ===== Logo glow animation ===== */
+.logo{
+  animation: goldGlow 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px rgba(245,199,106,.35));
+}
+
+@keyframes goldGlow{
+  0%{
+    filter:
+      drop-shadow(0 0 4px rgba(245,199,106,.25))
+      drop-shadow(0 0 8px rgba(245,199,106,.15));
+  }
+
+  50%{
+    filter:
+      drop-shadow(0 0 10px rgba(255,214,107,.55))
+      drop-shadow(0 0 18px rgba(255,214,107,.35));
+  }
+
+  100%{
+    filter:
+      drop-shadow(0 0 4px rgba(245,199,106,.25))
+      drop-shadow(0 0 8px rgba(245,199,106,.15));
+  }
+}
