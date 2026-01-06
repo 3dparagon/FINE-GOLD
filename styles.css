@@ -76,7 +76,10 @@ body{
 .topTabs{
   display:flex;
   gap:10px;
+  margin-top:24px;   /* ⬇ опускаем кнопки ниже */
+  justify-content:center;
 }
+
 
 .tabBtn{
   background:transparent;
