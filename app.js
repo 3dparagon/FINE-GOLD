@@ -1,9 +1,9 @@
 const OZ_TO_G = 31.1034768;
 
 /** === CONTACTS (PUT YOUR REAL DATA HERE) === */
-const TELEGRAM_LINK = "https://t.me/your_username"; // <-- поменяй
-const WHATSAPP_NUMBER = "+37000000000";             // <-- поменяй (с кодом страны)
-const CALL_NUMBER = "+37000000000";                 // <-- поменяй
+const TELEGRAM_LINK = "https://t.me/fine_gold_riga"; // <-- поменяй
+const WHATSAPP_NUMBER = "+37120015925";             // <-- поменяй (с кодом страны)
+const CALL_NUMBER = "+37120015925";                 // <-- поменяй
 
 /** === SHOP CONFIG === */
 const SHOP_ITEMS = [
