@@ -1,73 +1,141 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#1e1e1e" />
   <title>Fine Gold</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="styles.css" />
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 
 <body>
-<div class="app">
-
-  <!-- HEADER: ТОЛЬКО ЛОГО + ТЕКСТ -->
-  <header class="header">
-    <div class="brand">
-      <img src="https://i.imgur.com/lerWRb0.png" class="logo" />
-      <div class="brandText">
-        <div class="title">Fine Gold</div>
-        <div class="subtitle">Gold mass calculator • 999.9</div>
-      </div>
-    </div>
-  </header>
-
-  <div class="content">
-
-    <!-- КНОПКИ НА МЕСТЕ CALCULATION -->
-    <div class="tabsInline">
-      <button class="tabBtn active">Calculation</button>
-      <button class="tabBtn">Buy Gold</button>
-    </div>
-
-    <!-- КОНТЕНТ -->
-    <div class="card">
-      <div id="list" class="list">
-        <!-- строки проб (JS не меняем) -->
-      </div>
-
-      <!-- PRICE -->
-      <div class="priceCard">
-        <div class="controls">
-          <button class="cur active">EUR</button>
-          <button class="cur">USD</button>
-          <button class="cur reset">Reset</button>
-        </div>
-
-        <div class="price-line">
-          <span>Price / 1g (24K / 999.9):</span>
-          <strong id="priceGram">—</strong>
-        </div>
-
-        <div class="price-line">
-          <span>Weight (24K / 999.9):</span>
-          <strong id="weight999">—</strong>
-        </div>
-
-        <div class="price-line total">
-          <span>Total (24K / 999.9):</span>
-          <strong id="total999">—</strong>
-        </div>
-
-        <div class="liveBottom">
-          Live update:
-          <span class="liveValue" id="liveUpdate">—</span>
+  <div class="app">
+    <header class="header">
+      <div class="brand">
+        <img class="logo" src="https://i.imgur.com/lerWRb0.png" alt="Fine Gold logo" />
+        <div class="brandText">
+          <div class="title">Fine Gold</div>
+          <div class="subtitle">Gold mass calculator • 999.9</div>
         </div>
       </div>
 
-    </div>
+      <!-- Кнопки в шапке (как сейчас) -->
+      <div class="topTabs" role="tablist">
+        <button id="tabCalc" class="tabBtn active" type="button">Calculation</button>
+        <button id="tabBuy" class="tabBtn" type="button">Buy Gold</button>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- ===== CALC VIEW ===== -->
+      <section id="viewCalc" class="card view active">
+        <h2 class="sectionTitle">Calculation</h2>
+
+        <!-- Главная проба 999.9 -->
+        <div class="main999 item active" data-probe="999.9" id="main999">
+          <div class="left">
+            <span class="probe">999.9°</span>
+            <span class="karat">24K</span>
+          </div>
+
+          <div class="right">
+            <div class="inputRow">
+              <input id="main999Input" class="massInput" type="number" inputmode="decimal" step="any" placeholder="" />
+              <span class="unit">g</span>
+            </div>
+            <div id="main999Sub" class="subvalue">— EUR / 1 g</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Остальные пробы -->
+        <div class="list" id="list"></div>
+
+        <!-- Плашка Price -->
+        <section class="priceCard">
+          <div class="priceHeader">
+            <h3 class="priceTitle">Price</h3>
+          </div>
+
+          <div class="controls">
+            <button id="eurBtn" class="cur active" type="button">EUR</button>
+            <button id="usdBtn" class="cur" type="button">USD</button>
+            <button id="resetBtn" class="cur reset" type="button">Reset</button>
+          </div>
+
+          <div class="price-line">
+            <span>Price / 1g (24K / 999.9):</span>
+            <strong id="pricePerGram">—</strong>
+          </div>
+
+          <div class="price-line">
+            <span>Weight (24K / 999.9):</span>
+            <strong id="eq9999">0.00 g</strong>
+          </div>
+
+          <div class="price-line total">
+            <span>Total (24K / 999.9):</span>
+            <strong id="totalPrice">—</strong>
+          </div>
+
+          <div class="liveBottom">
+            <span class="liveLabel">Live update:</span>
+            <strong id="liveStamp" class="liveValue">—</strong>
+          </div>
+        </section>
+      </section>
+
+      <!-- ===== BUY VIEW ===== -->
+      <section id="viewBuy" class="card view">
+        <div class="buyHeader">
+          <h2 class="sectionTitle">Buy Gold</h2>
+          <div class="badge">ONLY for Baltic (LT / LV / EE)</div>
+        </div>
+
+        <div id="balticGate" class="gateBox">
+          <div class="gateTitle">Available only for Baltic countries</div>
+          <div class="gateText">If you are outside LT/LV/EE, contact us — we will confirm availability by phone.</div>
+        </div>
+
+        <div class="buyCard">
+          <div class="buyRow">
+            <div class="buyLabel">Live price (24K / 999.9)</div>
+            <div class="buyValue" id="buyLivePrice">—</div>
+          </div>
+          <div class="buyRow">
+            <div class="buyLabel">Currency</div>
+            <div class="buyValue" id="buyCurrency">EUR</div>
+          </div>
+          <div class="buyNote">
+            Prices are <b>estimated</b>. Final price is confirmed by call/message. No online payment.
+          </div>
+        </div>
+
+        <div class="shopList" id="shopList"></div>
+
+        <div class="contactBox">
+          <div class="contactTitle">Order / Consultation</div>
+          <div class="contactButtons">
+            <a id="tgBtn" class="cbtn" href="#" target="_blank" rel="noopener">Telegram</a>
+            <a id="waBtn" class="cbtn" href="#" target="_blank" rel="noopener">WhatsApp</a>
+            <a id="callBtn" class="cbtn outline" href="#">Call</a>
+          </div>
+          <div class="contactHint">Order confirmed by phone.</div>
+        </div>
+      </section>
+    </main>
   </div>
-</div>
 
-<script src="app.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>
