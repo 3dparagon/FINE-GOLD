@@ -40,16 +40,15 @@ function toNum(v) {
 
 // math
 function pureFromAlloy(mass, probe) {
-  return mass * (probe / 999.9); // чистое золото (24K) в граммах
+  return mass * (probe / 999.9);
 }
 function alloyFromPure(pureMass, probe) {
-  return pureMass * 999.9 / probe; // сколько грамм сплава нужно для такого pure
+  return pureMass * 999.9 / probe;
 }
 function alloyPricePerGram(purePrice, probe) {
   return purePrice * (probe / 999.9);
 }
 
-// dd.mm.yyyy hh:mm
 function formatDateTime(ts) {
   const d = new Date(ts);
   const dd = String(d.getDate()).padStart(2, "0");
@@ -131,10 +130,7 @@ function renderOnce() {
     });
 
     input.addEventListener("blur", () => {
-      if (String(input.value).trim() === "") {
-        // оставляем пустым (как ты просил), но логически это 0
-        update(probe, 0);
-      }
+      if (String(input.value).trim() === "") update(probe, 0);
     });
   });
 
@@ -186,15 +182,18 @@ function setCurrency(cur) {
 function setActive(probe) {
   activeProbe = probe;
 
+  // подсветка активной строки можно оставить, но визуально всё равно “активно”
+  for (const r of rows) {
+    const item = rowEls.get(r.p);
+    item.classList.toggle("active", r.p === probe);
+  }
+
+  // чтобы ввод был только в выбранной строке
   mainInput.readOnly = (probe !== 999.9);
 
   for (const r of rows) {
-    const p = r.p;
-    const item = rowEls.get(p);
-    const input = rowInputs.get(p);
-    const isActive = (p === probe);
-    item.classList.toggle("active", isActive);
-    input.readOnly = !isActive;
+    const input = rowInputs.get(r.p);
+    input.readOnly = (r.p !== probe);
   }
 }
 
@@ -208,7 +207,6 @@ async function update(fromProbe, fromMass) {
 
   const pureMass = pureFromAlloy(fromMass, fromProbe);
 
-  // footer
   eq9999El.textContent = `${f2(pureMass)} g`;
 
   if (pricePerGram999 === null) {
@@ -219,16 +217,13 @@ async function update(fromProbe, fromMass) {
     totalEl.textContent = `${f2(pureMass * pricePerGram999)} ${currency}`;
   }
 
-  // 999.9 mass
   const mass999 = alloyFromPure(pureMass, 999.9);
   if (fromProbe !== 999.9) mainInput.value = mass999 ? mass999.toFixed(2) : "";
 
-  // 999.9 price per gram
   mainSub.textContent = (pricePerGram999 === null)
     ? `— ${currency} / 1 g`
     : `${f2(pricePerGram999)} ${currency} / 1 g`;
 
-  // other rows
   for (const r of rows) {
     const p = r.p;
     const outMass = alloyFromPure(pureMass, p);
