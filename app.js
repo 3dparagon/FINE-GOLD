@@ -1,5 +1,21 @@
 const OZ_TO_G = 31.1034768;
 
+/** === CONTACTS (PUT YOUR REAL DATA HERE) === */
+const TELEGRAM_LINK = "https://t.me/your_username"; // <-- поменяй
+const WHATSAPP_NUMBER = "+37000000000";             // <-- поменяй (с кодом страны)
+const CALL_NUMBER = "+37000000000";                 // <-- поменяй
+
+/** === SHOP CONFIG === */
+const SHOP_ITEMS = [
+  { name: "Gold bar", grams: 1, premiumPct: 4.5 },
+  { name: "Gold bar", grams: 2.5, premiumPct: 4.0 },
+  { name: "Gold bar", grams: 5, premiumPct: 3.5 },
+  { name: "Gold bar", grams: 10, premiumPct: 3.0 },
+  { name: "Gold bar", grams: 20, premiumPct: 2.8 },
+  { name: "Gold bar", grams: 50, premiumPct: 2.6 },
+  { name: "Gold bar", grams: 100, premiumPct: 2.5 },
+];
+
 const fmt = new Intl.NumberFormat("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const f2 = (n) => fmt.format(n);
 
@@ -11,7 +27,13 @@ const rows = [
   { p: 375, l: "375°", k: "9K" },
 ];
 
-// DOM
+// === DOM: tabs/views ===
+const tabCalc = document.getElementById("tabCalc");
+const tabBuy = document.getElementById("tabBuy");
+const viewCalc = document.getElementById("viewCalc");
+const viewBuy = document.getElementById("viewBuy");
+
+// === DOM: calculator ===
 const list = document.getElementById("list");
 const mainInput = document.getElementById("main999Input");
 const mainSub = document.getElementById("main999Sub");
@@ -22,6 +44,15 @@ const liveStampEl = document.getElementById("liveStamp");
 const eurBtn = document.getElementById("eurBtn");
 const usdBtn = document.getElementById("usdBtn");
 const resetBtn = document.getElementById("resetBtn");
+
+// === DOM: buy gold ===
+const buyLivePrice = document.getElementById("buyLivePrice");
+const buyCurrency = document.getElementById("buyCurrency");
+const shopList = document.getElementById("shopList");
+const tgBtn = document.getElementById("tgBtn");
+const waBtn = document.getElementById("waBtn");
+const callBtn = document.getElementById("callBtn");
+const balticGate = document.getElementById("balticGate");
 
 // state
 let currency = "EUR";
@@ -49,6 +80,7 @@ function alloyPricePerGram(purePrice, probe) {
   return purePrice * (probe / 999.9);
 }
 
+// dd.mm.yyyy hh:mm
 function formatDateTime(ts) {
   const d = new Date(ts);
   const dd = String(d.getDate()).padStart(2, "0");
@@ -70,12 +102,24 @@ async function loadPrice() {
     if (!Number.isFinite(xau) || xau <= 0) throw new Error("Bad xauPrice");
 
     pricePerGram999 = xau / OZ_TO_G;
+
     mainSub.textContent = `${f2(pricePerGram999)} ${currency} / 1 g`;
     liveStampEl.textContent = formatDateTime(Date.now());
+
+    // update Buy Gold
+    buyLivePrice.textContent = `${f2(pricePerGram999)} ${currency} / 1 g`;
+    buyCurrency.textContent = currency;
+    renderShop();
+
   } catch (e) {
     pricePerGram999 = null;
     mainSub.textContent = `— ${currency} / 1 g`;
     liveStampEl.textContent = "—";
+
+    buyLivePrice.textContent = `—`;
+    buyCurrency.textContent = currency;
+    renderShop();
+
     console.warn("Price load failed:", e);
   }
 }
@@ -85,7 +129,7 @@ function clearIfZero(input) {
   if (v === "0" || v === "0.0" || v === "0.00" || v === "0,00") input.value = "";
 }
 
-function renderOnce() {
+function renderCalcRows() {
   list.innerHTML = rows.map(r => `
     <div class="item" data-probe="${r.p}">
       <div class="left">
@@ -126,11 +170,11 @@ function renderOnce() {
 
     input.addEventListener("input", () => {
       if (activeProbe !== probe) return;
-      update(probe, toNum(input.value));
+      updateCalc(probe, toNum(input.value));
     });
 
     input.addEventListener("blur", () => {
-      if (String(input.value).trim() === "") update(probe, 0);
+      if (String(input.value).trim() === "") updateCalc(probe, 0);
     });
   });
 
@@ -143,57 +187,27 @@ function renderOnce() {
 
   mainInput.addEventListener("input", () => {
     if (activeProbe !== 999.9) return;
-    update(999.9, toNum(mainInput.value));
+    updateCalc(999.9, toNum(mainInput.value));
   });
 
   mainInput.addEventListener("blur", () => {
-    if (String(mainInput.value).trim() === "") update(999.9, 0);
+    if (String(mainInput.value).trim() === "") updateCalc(999.9, 0);
   });
-
-  // currency
-  eurBtn.addEventListener("click", () => setCurrency("EUR"));
-  usdBtn.addEventListener("click", () => setCurrency("USD"));
-
-  // reset
-  resetBtn.addEventListener("click", () => {
-    mainInput.value = "";
-    for (const r of rows) rowInputs.get(r.p).value = "";
-    setActive(585);
-    update(585, 0);
-    rowInputs.get(585).focus();
-  });
-}
-
-function setCurrency(cur) {
-  currency = cur;
-  eurBtn.classList.toggle("active", cur === "EUR");
-  usdBtn.classList.toggle("active", cur === "USD");
-
-  pricePerGram999 = null;
-  mainSub.textContent = `— ${currency} / 1 g`;
-  for (const r of rows) rowSubs.get(r.p).textContent = `— ${currency} / 1 g`;
-  priceEl.textContent = "—";
-  totalEl.textContent = "—";
-  liveStampEl.textContent = "—";
-
-  update(activeProbe, getMass(activeProbe));
 }
 
 function setActive(probe) {
   activeProbe = probe;
 
-  // подсветка активной строки можно оставить, но визуально всё равно “активно”
+  // optional row shadow
   for (const r of rows) {
     const item = rowEls.get(r.p);
     item.classList.toggle("active", r.p === probe);
   }
 
-  // чтобы ввод был только в выбранной строке
+  // input is editable only on selected row
   mainInput.readOnly = (probe !== 999.9);
-
   for (const r of rows) {
-    const input = rowInputs.get(r.p);
-    input.readOnly = (r.p !== probe);
+    rowInputs.get(r.p).readOnly = (r.p !== probe);
   }
 }
 
@@ -202,7 +216,7 @@ function getMass(probe) {
   return toNum(rowInputs.get(probe)?.value);
 }
 
-async function update(fromProbe, fromMass) {
+async function updateCalc(fromProbe, fromMass) {
   if (pricePerGram999 === null) await loadPrice();
 
   const pureMass = pureFromAlloy(fromMass, fromProbe);
@@ -233,11 +247,116 @@ async function update(fromProbe, fromMass) {
       ? `— ${currency} / 1 g`
       : `${f2(alloyPricePerGram(pricePerGram999, p))} ${currency} / 1 g`;
   }
+
+  // also refresh shop values
+  renderShop();
+}
+
+function setCurrency(cur) {
+  currency = cur;
+  eurBtn.classList.toggle("active", cur === "EUR");
+  usdBtn.classList.toggle("active", cur === "USD");
+
+  pricePerGram999 = null;
+
+  mainSub.textContent = `— ${currency} / 1 g`;
+  for (const r of rows) rowSubs.get(r.p).textContent = `— ${currency} / 1 g`;
+
+  priceEl.textContent = "—";
+  totalEl.textContent = "—";
+  liveStampEl.textContent = "—";
+
+  buyCurrency.textContent = currency;
+  buyLivePrice.textContent = "—";
+
+  updateCalc(activeProbe, getMass(activeProbe));
+}
+
+function initControls() {
+  eurBtn.addEventListener("click", () => setCurrency("EUR"));
+  usdBtn.addEventListener("click", () => setCurrency("USD"));
+
+  resetBtn.addEventListener("click", () => {
+    mainInput.value = "";
+    for (const r of rows) rowInputs.get(r.p).value = "";
+    setActive(585);
+    updateCalc(585, 0);
+    rowInputs.get(585).focus();
+  });
+
+  tabCalc.addEventListener("click", () => showView("calc"));
+  tabBuy.addEventListener("click", () => showView("buy"));
+
+  // contacts
+  tgBtn.href = TELEGRAM_LINK;
+  waBtn.href = `https://wa.me/${WHATSAPP_NUMBER.replace(/[^\d]/g, "")}`;
+  callBtn.href = `tel:${CALL_NUMBER}`;
+}
+
+function showView(name) {
+  const isCalc = name === "calc";
+  viewCalc.classList.toggle("active", isCalc);
+  viewBuy.classList.toggle("active", !isCalc);
+  tabCalc.classList.toggle("active", isCalc);
+  tabBuy.classList.toggle("active", !isCalc);
+
+  // refresh shop when opening
+  if (!isCalc) renderShop();
+}
+
+// Baltic soft-gate (no IP; based on locale/timezone)
+function isLikelyBaltic() {
+  const lang = (navigator.language || "").toLowerCase();
+  const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || "").toLowerCase();
+
+  const langOk = lang.startsWith("lt") || lang.startsWith("lv") || lang.startsWith("et");
+  const tzOk = tz.includes("vilnius") || tz.includes("riga") || tz.includes("tallinn");
+
+  return langOk || tzOk;
+}
+
+function renderShop() {
+  // show/hide gate message (soft)
+  const baltic = isLikelyBaltic();
+  balticGate.style.display = baltic ? "none" : "block";
+
+  // render items
+  const cur = currency;
+  const p = pricePerGram999; // price per gram 999.9
+  shopList.innerHTML = SHOP_ITEMS.map(it => {
+    let est = "—";
+    let sub = "Waiting for live price…";
+    if (Number.isFinite(p) && p > 0) {
+      const base = p * it.grams;
+      const estPrice = base * (1 + it.premiumPct / 100);
+      est = `${f2(estPrice)} ${cur}`;
+      sub = `≈ ${f2(base)} ${cur} + premium ${it.premiumPct}%`;
+    }
+
+    return `
+      <div class="shopItem">
+        <div class="shopTop">
+          <div>
+            <div class="shopName">${it.name} ${it.grams}g • 999.9</div>
+            <div class="shopGram">Investment gold bar</div>
+          </div>
+          <div class="shopPrice">${est}</div>
+        </div>
+        <div class="shopSub">
+          <span>${sub}</span>
+          <span>Order by call/message</span>
+        </div>
+      </div>
+    `;
+  }).join("");
 }
 
 // init
-renderOnce();
+renderCalcRows();
+initControls();
 setActive(585);
 mainInput.readOnly = true;
 mainInput.value = "";
-update(585, 0);
+updateCalc(585, 0);
+loadPrice();
+showView("calc");
