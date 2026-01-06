@@ -27,25 +27,27 @@ body{
 .brand{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:12px;
 }
 
-/* ✅ логотип больше, чем буква F */
+/* ✅ логотип больше */
 .logo{
-  width:34px;
-  height:34px;
+  width:42px;
+  height:42px;
   object-fit:contain;
   display:block;
 }
 
+/* ✅ Fine Gold крупнее */
 .title{
-  font-size:20px;
-  font-weight:bold;
+  font-size:24px;
+  font-weight:800;
   line-height:1;
+  letter-spacing:0.2px;
 }
 
 .card{ padding:15px; }
-h2{ margin:0 0 12px; }
+h2{ margin:0 0 12px; font-size:28px; }
 
 .main999{
   border:2px solid #f5c76a;
@@ -59,22 +61,24 @@ h2{ margin:0 0 12px; }
   background:rgba(245,199,106,.08);
 }
 
-.divider{ height:1px; background:#444; margin-bottom:12px; }
+.divider{ height:1px; background:#444; margin:14px 0 12px; }
 
+/* ✅ ВСЕ карточки выглядят активными (без тусклости) */
 .list .item{
   display:flex;
   justify-content:space-between;
   align-items:center;
   padding:10px;
-  border:1px solid #f5c76a;
+  border:1px solid rgba(245,199,106,.65);
   border-radius:10px;
   margin-bottom:10px;
-  opacity:.55;
+  opacity:1;
+  background:rgba(255,255,255,.01);
 }
 
+/* можно оставить лёгкую разницу активной строки (НЕ тусклость), но не обязательно */
 .item.active{
-  opacity:1;
-  box-shadow:0 0 0 2px rgba(245,199,106,.35);
+  box-shadow:0 0 0 2px rgba(245,199,106,.20);
 }
 
 .left{ display:flex; gap:10px; align-items:baseline; }
@@ -90,20 +94,30 @@ h2{ margin:0 0 12px; }
 
 .inputRow{ display:flex; gap:6px; align-items:center; }
 
-/* ✅ без 0.00, комфортный ввод */
+/* input */
 .massInput{
   width:140px;
   background:transparent;
-  border:1px solid #f5c76a;
+  border:1px solid rgba(245,199,106,.75);
   color:#f5c76a;
   padding:6px 8px;
   border-radius:6px;
   text-align:right;
 }
 
-.massInput[readonly]{ opacity:.55; }
+/* ✅ НЕ делаем тусклым readonly (чтобы все строки были “подсвечены”) */
+.massInput[readonly]{
+  opacity:1;
+}
 
-/* убираем стрелки у number на некоторых браузерах */
+/* ✅ ЯРКО-ЗОЛОТОЙ ФОКУС: понятно, какую пробу выбрали */
+.massInput:focus{
+  outline:none;
+  border-color:#ffd66b;
+  box-shadow:0 0 0 2px rgba(255,214,107,.35), 0 0 18px rgba(255,214,107,.12);
+}
+
+/* убрать стрелки у number (на части браузеров) */
 .massInput::-webkit-outer-spin-button,
 .massInput::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
 
