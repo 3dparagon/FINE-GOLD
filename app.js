@@ -1,11 +1,11 @@
 const OZ_TO_G = 31.1034768;
 
-// === CONTACTS (CHANGE TO YOUR REAL) ===
+// === CONTACTS (потом заменим на твои реальные) ===
 const TELEGRAM_LINK = "https://t.me/your_username";
 const WHATSAPP_NUMBER = "+37000000000";
 const CALL_NUMBER = "+37000000000";
 
-// === SHOP CONFIG ===
+// === SHOP ITEMS (мини-магазин по звонку/мессенджеру) ===
 const SHOP_ITEMS = [
   { name: "Gold bar", grams: 1, premiumPct: 4.5 },
   { name: "Gold bar", grams: 2.5, premiumPct: 4.0 },
@@ -56,7 +56,7 @@ const balticGate = document.getElementById("balticGate");
 
 // state
 let currency = "EUR";
-let activeProbe = 999.9; // default active 999.9
+let activeProbe = 999.9;
 let pricePerGram999 = null;
 
 // cache
@@ -91,6 +91,7 @@ function formatDateTime(ts) {
   return `${dd}.${mm}.${yyyy} ${hh}:${min}`;
 }
 
+// reliable live price (goldprice.org public endpoint)
 async function loadPrice() {
   try {
     const url = `https://data-asg.goldprice.org/dbXRates/${encodeURIComponent(currency)}`;
@@ -108,6 +109,9 @@ async function loadPrice() {
 
     buyLivePrice.textContent = `${f2(pricePerGram999)} ${currency} / 1 g`;
     buyCurrency.textContent = currency;
+
+    // ВАЖНО: после обновления цены пересчитываем экран по текущему вводу
+    updateCalc(activeProbe, getMass(activeProbe));
     renderShop();
 
   } catch (e) {
@@ -117,15 +121,12 @@ async function loadPrice() {
 
     buyLivePrice.textContent = `—`;
     buyCurrency.textContent = currency;
+
+    updateCalc(activeProbe, getMass(activeProbe));
     renderShop();
 
     console.warn("Price load failed:", e);
   }
-}
-
-function clearIfZero(input) {
-  const v = String(input.value || "").trim();
-  if (v === "0" || v === "0.0" || v === "0.00" || v === "0,00") input.value = "";
 }
 
 function renderCalcRows() {
@@ -145,7 +146,7 @@ function renderCalcRows() {
     </div>
   `).join("");
 
-  document.querySelectorAll(".item").forEach(item => {
+  document.querySelectorAll("#list .item").forEach(item => {
     const probe = Number(item.dataset.probe);
     const input = item.querySelector(".massInput");
     const sub = item.querySelector(".subvalue");
@@ -156,7 +157,6 @@ function renderCalcRows() {
 
     const activate = () => {
       setActive(probe);
-      clearIfZero(input);
       input.focus();
       input.select?.();
     };
@@ -174,18 +174,16 @@ function renderCalcRows() {
     });
   });
 
-  // 999.9
+  // 999.9 row
   const mainRow = document.getElementById("main999");
   mainRow.addEventListener("click", () => {
     setActive(999.9);
-    clearIfZero(mainInput);
     mainInput.focus();
     mainInput.select?.();
   });
 
   mainInput.addEventListener("focus", () => {
     setActive(999.9);
-    clearIfZero(mainInput);
     mainInput.select?.();
   });
 
@@ -202,13 +200,10 @@ function renderCalcRows() {
 function setActive(probe) {
   activeProbe = probe;
 
-  // highlight
   document.getElementById("main999").classList.toggle("active", probe === 999.9);
-  for (const r of rows) {
-    rowEls.get(r.p)?.classList.toggle("active", r.p === probe);
-  }
+  for (const r of rows) rowEls.get(r.p)?.classList.toggle("active", r.p === probe);
 
-  // allow edit ONLY on active row
+  // editable only active row
   mainInput.readOnly = (probe !== 999.9);
   for (const r of rows) {
     const inp = rowInputs.get(r.p);
@@ -221,14 +216,12 @@ function getMass(probe) {
   return toNum(rowInputs.get(probe)?.value);
 }
 
-async function updateCalc(fromProbe, fromMass) {
-  if (pricePerGram999 === null) await loadPrice();
-
+function updateCalc(fromProbe, fromMass) {
   const pureMass = pureFromAlloy(fromMass, fromProbe);
 
   eq9999El.textContent = `${f2(pureMass)} g`;
 
-  if (pricePerGram999 === null) {
+  if (pricePerGram999 == null) {
     priceEl.textContent = "—";
     totalEl.textContent = "—";
   } else {
@@ -236,15 +229,17 @@ async function updateCalc(fromProbe, fromMass) {
     totalEl.textContent = `${f2(pureMass * pricePerGram999)} ${currency}`;
   }
 
-  // update 999.9 field
-  const mass999 = alloyFromPure(pureMass, 999.9);
-  if (fromProbe !== 999.9) mainInput.value = pureMass === 0 ? "" : mass999.toFixed(2);
+  // update 999.9 field if not source
+  if (fromProbe !== 999.9) {
+    const mass999 = alloyFromPure(pureMass, 999.9);
+    mainInput.value = pureMass === 0 ? "" : mass999.toFixed(2);
+  }
 
-  mainSub.textContent = (pricePerGram999 === null)
+  mainSub.textContent = (pricePerGram999 == null)
     ? `— ${currency} / 1 g`
     : `${f2(pricePerGram999)} ${currency} / 1 g`;
 
-  // update other probes
+  // other probes
   for (const r of rows) {
     const p = r.p;
     const outMass = alloyFromPure(pureMass, p);
@@ -253,12 +248,10 @@ async function updateCalc(fromProbe, fromMass) {
       rowInputs.get(p).value = pureMass === 0 ? "" : outMass.toFixed(2);
     }
 
-    rowSubs.get(p).textContent = (pricePerGram999 === null)
+    rowSubs.get(p).textContent = (pricePerGram999 == null)
       ? `— ${currency} / 1 g`
       : `${f2(alloyPricePerGram(pricePerGram999, p))} ${currency} / 1 g`;
   }
-
-  renderShop();
 }
 
 function setCurrency(cur) {
@@ -279,40 +272,10 @@ function setCurrency(cur) {
   buyLivePrice.textContent = "—";
 
   updateCalc(activeProbe, getMass(activeProbe));
+  renderShop();
 }
 
-function initControls() {
-  eurBtn.addEventListener("click", () => setCurrency("EUR"));
-  usdBtn.addEventListener("click", () => setCurrency("USD"));
-
-  resetBtn.addEventListener("click", () => {
-    mainInput.value = "";
-    for (const r of rows) rowInputs.get(r.p).value = "";
-
-    setActive(999.9);
-    updateCalc(999.9, 0);
-    mainInput.focus();
-  });
-
-  tabCalc.addEventListener("click", () => showView("calc"));
-  tabBuy.addEventListener("click", () => showView("buy"));
-
-  tgBtn.href = TELEGRAM_LINK;
-  waBtn.href = `https://wa.me/${WHATSAPP_NUMBER.replace(/[^\d]/g, "")}`;
-  callBtn.href = `tel:${CALL_NUMBER}`;
-}
-
-function showView(name) {
-  const isCalc = name === "calc";
-  viewCalc.classList.toggle("active", isCalc);
-  viewBuy.classList.toggle("active", !isCalc);
-  tabCalc.classList.toggle("active", isCalc);
-  tabBuy.classList.toggle("active", !isCalc);
-
-  if (!isCalc) renderShop();
-}
-
-// soft-gate: Baltic by language/timezone
+// Baltic gate (простая проверка по языку/таймзоне)
 function isLikelyBaltic() {
   const lang = (navigator.language || "").toLowerCase();
   const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || "").toLowerCase();
@@ -324,19 +287,17 @@ function renderShop() {
   const baltic = isLikelyBaltic();
   balticGate.style.display = baltic ? "none" : "block";
 
-  const cur = currency;
-  const p = pricePerGram999;
-
-  buyCurrency.textContent = cur;
+  buyCurrency.textContent = currency;
 
   shopList.innerHTML = SHOP_ITEMS.map(it => {
     let est = "—";
     let sub = "Waiting for live price…";
-    if (Number.isFinite(p) && p > 0) {
-      const base = p * it.grams;
+
+    if (Number.isFinite(pricePerGram999) && pricePerGram999 > 0) {
+      const base = pricePerGram999 * it.grams;
       const estPrice = base * (1 + it.premiumPct / 100);
-      est = `${f2(estPrice)} ${cur}`;
-      sub = `≈ ${f2(base)} ${cur} + premium ${it.premiumPct}%`;
+      est = `${f2(estPrice)} ${currency}`;
+      sub = `≈ ${f2(base)} ${currency} + premium ${it.premiumPct}%`;
     }
 
     return `
@@ -357,10 +318,44 @@ function renderShop() {
   }).join("");
 }
 
+function showView(name) {
+  const isCalc = name === "calc";
+  viewCalc.classList.toggle("active", isCalc);
+  viewBuy.classList.toggle("active", !isCalc);
+  tabCalc.classList.toggle("active", isCalc);
+  tabBuy.classList.toggle("active", !isCalc);
+
+  if (!isCalc) renderShop();
+}
+
+function initControls() {
+  eurBtn.addEventListener("click", () => setCurrency("EUR"));
+  usdBtn.addEventListener("click", () => setCurrency("USD"));
+
+  resetBtn.addEventListener("click", () => {
+    mainInput.value = "";
+    for (const r of rows) rowInputs.get(r.p).value = "";
+    setActive(999.9);
+    updateCalc(999.9, 0);
+    mainInput.focus();
+  });
+
+  tabCalc.addEventListener("click", () => showView("calc"));
+  tabBuy.addEventListener("click", () => showView("buy"));
+
+  tgBtn.href = TELEGRAM_LINK;
+  waBtn.href = `https://wa.me/${WHATSAPP_NUMBER.replace(/[^\d]/g, "")}`;
+  callBtn.href = `tel:${CALL_NUMBER}`;
+}
+
 // init
 renderCalcRows();
 initControls();
 setActive(999.9);
 updateCalc(999.9, 0);
-loadPrice();
+renderShop();
 showView("calc");
+
+// авто-обновление цены каждые 60 секунд
+loadPrice();
+setInterval(loadPrice, 60_000);
