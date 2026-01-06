@@ -33,7 +33,6 @@ body{
 }
 
 .brandText{ display:flex; flex-direction:column; gap:2px; }
-
 .title{
   font-size:24px;
   font-weight:800;
@@ -73,7 +72,7 @@ body{
   }
 }
 
-/* tabs in header */
+/* tabs */
 .topTabs{
   display:flex;
   gap:12px;
