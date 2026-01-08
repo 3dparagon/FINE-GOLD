@@ -1,391 +1,344 @@
 /* =========================
-   CONFIG (REMINDER)
-   Before Google Play:
-   update CALL_NUMBER & WHATSAPP_NUMBER
+   Fine Gold — EUR only
+   Prices source: https://api.edelmetalle.de/public.json
+   (gold_eur is per troy ounce; convert to EUR/gram)
 ========================= */
-const CALL_NUMBER = "+37000000000";
-const WHATSAPP_NUMBER = "+37000000000";
-const TELEGRAM_USERNAME = "yourtelegram"; // without @
 
-const CURRENCY_SYMBOL = "€";
+const CALL_NUMBER = "+0000000000";      // TODO: поменяй перед публикацией
+const WHATSAPP_NUMBER = "+0000000000";  // TODO: поменяй перед публикацией
+const TELEGRAM_USERNAME = "your_telegram"; // без @
 
-// Probes list
-const ROWS = [
-  { label: "999.9°", karat: "24K", probe: 999.9 },
-  { label: "958°",   karat: "23K", probe: 958 },
-  { label: "750°",   karat: "18K", probe: 750 },
-  { label: "585°",   karat: "14K", probe: 585 },
-  { label: "417°",   karat: "10K", probe: 417 },
-  { label: "375°",   karat: "9K",  probe: 375 },
+const OUNCE_TO_GRAM = 31.1034768;
+const MAIN_PURITY = 999.9;
+
+const rows = [
+  { probe: 999.9, label: "999.9°", karat: "24K" },
+  { probe: 958.0, label: "958°",   karat: "23K" },
+  { probe: 750.0, label: "750°",   karat: "18K" },
+  { probe: 585.0, label: "585°",   karat: "14K" },
+  { probe: 417.0, label: "417°",   karat: "10K" },
+  { probe: 375.0, label: "375°",   karat: "9K"  },
 ];
 
-// Demo shop list
-const SHOP_ITEMS = [
-  { name: "Gold bar", grams: 1 },
-  { name: "Gold bar", grams: 2 },
-  { name: "Gold bar", grams: 5 },
-  { name: "Gold bar", grams: 10 },
-];
+const state = {
+  activeProbe: 999.9,
+  activeInput: "",         // строка (чтобы не мешать вводу)
+  goldPerGram999: null,    // EUR per gram of 999.9
+  lastUpdated: null,
+};
 
-// ====== DOM ======
-const listEl = document.getElementById("list");
-const pricePerGramEl = document.getElementById("pricePerGram");
-const pureWeightEl = document.getElementById("pureWeight");
-const totalPriceEl = document.getElementById("totalPrice");
-const liveUpdateEl = document.getElementById("liveUpdate");
+const $ = (id) => document.getElementById(id);
 
-const buyBasePriceEl = document.getElementById("buyBasePrice");
-const buyUpdateEl = document.getElementById("buyUpdate");
-const shopListEl = document.getElementById("shopList");
+const listEl = $("list");
+const pricePerGEl = $("pricePerG");
+const pureWeightEl = $("pureWeight");
+const totalPriceEl = $("totalPrice");
+const liveUpdateEl = $("liveUpdate");
 
-const resetBtn = document.getElementById("resetBtn");
+const buySpotEl = $("buySpot");
+const buyUpdatedEl = $("buyUpdated");
 
-const tgBtn = document.getElementById("tgBtn");
-const waBtn = document.getElementById("waBtn");
+const tabCalc = $("tabCalc");
+const tabBuy = $("tabBuy");
+const viewCalc = $("viewCalc");
+const viewBuy = $("viewBuy");
 
-const tabBtns = document.querySelectorAll(".tabBtn");
-const viewCalc = document.getElementById("view-calc");
-const viewBuy = document.getElementById("view-buy");
+const resetBtn = $("resetBtn");
 
-// Terms modal
-const termsOverlay = document.getElementById("termsOverlay");
-const openTermsBtn = document.getElementById("openTerms");
-const closeTermsBtn = document.getElementById("closeTerms");
+const termsBtn = $("termsBtn");
+const termsModal = $("termsModal");
+const termsOverlay = $("termsOverlay");
+const termsClose = $("termsClose");
+const termsOk = $("termsOk");
 
-// ====== STATE ======
-let baseEurPerGram999 = null; // EUR per 1g of 999.9
-let activeProbe = 999.9;      // which row user is typing in
-let pure999Weight = 0;        // computed pure gold weight (999.9)
+const tgBtn = $("tgBtn");
+const waBtn = $("waBtn");
 
-// ====== HELPERS ======
-function toNumber(val) {
-  if (val == null) return 0;
-  const s = String(val).trim().replace(/\s+/g, "").replace(",", ".");
-  const n = Number(s);
-  return Number.isFinite(n) ? n : 0;
+function fmtMoneyEUR(x){
+  if (x == null || !isFinite(x)) return "—";
+  // de-DE даёт запятую как на твоих скринах
+  return new Intl.NumberFormat("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(x) + " €";
 }
 
-function fmtMoney(n) {
-  if (!Number.isFinite(n)) return "—";
-  return n.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + CURRENCY_SYMBOL;
+function fmtNumber(x){
+  if (x == null || !isFinite(x)) return "—";
+  return new Intl.NumberFormat("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(x);
 }
 
-function fmtGram(n) {
-  if (!Number.isFinite(n)) return "0,00 g";
-  return n.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " g";
+function fmtGram(x){
+  if (x == null || !isFinite(x)) return "—";
+  return fmtNumber(x) + " g";
 }
 
-function fmtPerGram(n) {
-  if (!Number.isFinite(n)) return "— " + CURRENCY_SYMBOL + " / 1g";
-  return n.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + CURRENCY_SYMBOL + " / 1g";
+function fmtDateTime(d){
+  if (!d) return "—";
+  const dd = new Intl.DateTimeFormat("de-DE", {
+    day:"2-digit", month:"2-digit", year:"numeric",
+    hour:"2-digit", minute:"2-digit"
+  }).format(d);
+  return dd;
 }
 
-function nowStamp() {
-  const d = new Date();
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
-  const hh = String(d.getHours()).padStart(2, "0");
-  const mi = String(d.getMinutes()).padStart(2, "0");
-  return `${dd}.${mm}.${yyyy} ${hh}:${mi}`;
-}
+/* -------- UI rendering -------- */
 
-// ====== UI RENDER ======
-function renderRows() {
-  listEl.innerHTML = "";
+function renderList(){
+  listEl.innerHTML = rows.map(r => `
+    <div class="item ${r.probe === state.activeProbe ? "active" : ""}" data-probe="${r.probe}">
+      <div class="left">
+        <div class="probe">${r.label}</div>
+        <div class="karat">${r.karat}</div>
+      </div>
 
-  ROWS.forEach(r => {
-    const item = document.createElement("div");
-    item.className = "item";
-    item.dataset.probe = String(r.probe);
+      <div class="right">
+        <div class="inputRow">
+          <input
+            class="massInput"
+            inputmode="decimal"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder=""
+            value="${r.probe === state.activeProbe ? escapeHtml(state.activeInput) : ""}"
+          />
+          <div class="unit">g</div>
+        </div>
+        <div class="subvalue" id="sub-${r.probe}">— € / 1g</div>
+      </div>
+    </div>
+  `).join("");
 
-    const left = document.createElement("div");
-    left.className = "left";
-    left.innerHTML = `
-      <div class="probe">${r.label}</div>
-      <div class="karat">${r.karat}</div>
-    `;
+  // events
+  const items = Array.from(listEl.querySelectorAll(".item"));
+  for (const item of items){
+    const probe = parseFloat(item.dataset.probe);
+    const input = item.querySelector(".massInput");
 
-    const right = document.createElement("div");
-    right.className = "right";
-
-    const inputRow = document.createElement("div");
-    inputRow.className = "inputRow";
-
-    const input = document.createElement("input");
-    input.className = "massInput";
-    input.type = "text";
-    input.inputMode = "decimal";
-    input.placeholder = ""; // no 0.00
-    input.value = "";
-
-    const unit = document.createElement("div");
-    unit.className = "unit";
-    unit.textContent = "g";
-
-    inputRow.appendChild(input);
-    inputRow.appendChild(unit);
-
-    const sub = document.createElement("div");
-    sub.className = "subvalue";
-    sub.textContent = "— " + CURRENCY_SYMBOL + " / 1g";
-
-    right.appendChild(inputRow);
-    right.appendChild(sub);
-
-    item.appendChild(left);
-    item.appendChild(right);
-    listEl.appendChild(item);
-
-    // click -> active row
-    item.addEventListener("click", () => setActive(r.probe));
-
-    // focus -> active row
-    input.addEventListener("focus", () => setActive(r.probe));
-
-    // input -> recalc from this probe
-    input.addEventListener("input", () => {
-      const w = toNumber(input.value);
-      activeProbe = r.probe;
-      pure999Weight = w * (r.probe / 999.9);
-      updateAllFields();
+    // click row => make active
+    item.addEventListener("click", (e) => {
+      // если клик по самому input — не мешаем
+      if (e.target && e.target.classList && e.target.classList.contains("massInput")) return;
+      setActiveProbe(probe);
     });
-  });
 
-  setActive(activeProbe);
+    // focus => make active
+    input.addEventListener("focus", () => setActiveProbe(probe));
+
+    // input => update
+    input.addEventListener("input", () => {
+      if (probe !== state.activeProbe) return;
+      state.activeInput = input.value; // сохраняем как строку
+      updateAll();
+    });
+  }
 }
 
-function setActive(probe) {
-  activeProbe = probe;
-
-  [...document.querySelectorAll(".item")].forEach(el => {
-    const p = Number(el.dataset.probe);
-    el.classList.toggle("active", p === probe);
-  });
+function setActiveProbe(probe){
+  state.activeProbe = probe;
+  // перерисуем, чтобы подсветка/значение было только в активной строке
+  renderList();
+  updateAll();
 }
 
-// ====== PRICES ======
-async function fetchGoldPriceEurPerGram999() {
-  try {
-    // IMPORTANT: if you have your own endpoint, replace only this URL.
-    // Expected JSON: { "eurPerGram999": 123.45 }
-    const res = await fetch("https://3dparagon.github.io/FINE-GOLD/pwa/price.json", { cache: "no-store" });
-    if (!res.ok) throw new Error("price fetch failed");
+/* -------- Logic -------- */
+
+function getActiveGrams(){
+  const v = parseFloat(String(state.activeInput).replace(",", "."));
+  if (!isFinite(v) || v <= 0) return 0;
+  return v;
+}
+
+function pure999FromAlloy(gramsAlloy, probe){
+  // сколько чистого 999.9 содержит этот сплав
+  return gramsAlloy * (probe / MAIN_PURITY);
+}
+
+function alloyFromPure999(pure999, probe){
+  // сколько грамм сплава нужно, чтобы получить столько же чистого 999.9
+  return pure999 * (MAIN_PURITY / probe);
+}
+
+function pricePerGramForProbe(probe){
+  if (state.goldPerGram999 == null) return null;
+  // цена сплава = цена 999.9 * доля чистого
+  return state.goldPerGram999 * (probe / MAIN_PURITY);
+}
+
+function updatePricesText(){
+  for (const r of rows){
+    const el = document.getElementById(`sub-${r.probe}`);
+    const p = pricePerGramForProbe(r.probe);
+    if (!el) continue;
+    el.textContent = (p == null) ? "— € / 1g" : `${fmtMoneyEUR(p)} / 1g`;
+  }
+}
+
+function updateAll(){
+  const g = getActiveGrams();
+  const pure999 = pure999FromAlloy(g, state.activeProbe);
+
+  // пересчёт веса в других пробах
+  const items = Array.from(listEl.querySelectorAll(".item"));
+  for (const item of items){
+    const probe = parseFloat(item.dataset.probe);
+    const input = item.querySelector(".massInput");
+    if (!input) continue;
+
+    if (probe === state.activeProbe){
+      // активное — оставляем ввод как есть
+      continue;
+    }
+
+    if (g === 0){
+      input.value = "";
+      continue;
+    }
+
+    const eq = alloyFromPure999(pure999, probe);
+    input.value = fmtNumber(eq);
+  }
+
+  // нижний блок (всегда на 24K/999.9)
+  const price999 = state.goldPerGram999;
+  pricePerGEl.textContent = (price999 == null) ? "—" : `${fmtMoneyEUR(price999)} / 1g`;
+
+  if (g === 0){
+    pureWeightEl.textContent = "—";
+    totalPriceEl.textContent = "—";
+  } else {
+    const pureWeight = alloyFromPure999(pure999, MAIN_PURITY); // это фактически граммы 999.9
+    pureWeightEl.textContent = fmtGram(pureWeight);
+
+    if (price999 == null){
+      totalPriceEl.textContent = "—";
+    } else {
+      const total = pureWeight * price999;
+      totalPriceEl.textContent = fmtMoneyEUR(total);
+    }
+  }
+
+  // buy gold block
+  buySpotEl.textContent = (price999 == null) ? "—" : `${fmtMoneyEUR(price999)} / 1g`;
+  buyUpdatedEl.textContent = state.lastUpdated ? fmtDateTime(state.lastUpdated) : "—";
+
+  updatePricesText();
+  liveUpdateEl.textContent = state.lastUpdated ? fmtDateTime(state.lastUpdated) : "—";
+}
+
+async function loadGoldPrice(){
+  // Кладём кеш — чтобы в WebView не было пусто при временном фейле
+  const cached = safeJsonParse(localStorage.getItem("fg_cache_price999"));
+  const cachedTs = localStorage.getItem("fg_cache_ts");
+  if (cached && typeof cached === "number" && isFinite(cached)){
+    state.goldPerGram999 = cached;
+    if (cachedTs) state.lastUpdated = new Date(parseInt(cachedTs, 10));
+    updateAll();
+  }
+
+  try{
+    const res = await fetch("https://api.edelmetalle.de/public.json", { cache: "no-store" });
+    if (!res.ok) throw new Error("Price HTTP " + res.status);
     const data = await res.json();
 
-    const v = Number(data.eurPerGram999);
-    if (!Number.isFinite(v) || v <= 0) throw new Error("bad price format");
+    // gold_eur — цена золота в EUR за унцию (troy ounce)
+    const goldEurPerOunce = Number(data.gold_eur);
+    if (!isFinite(goldEurPerOunce) || goldEurPerOunce <= 0) throw new Error("Bad gold_eur");
 
-    baseEurPerGram999 = v;
-    return true;
-  } catch (e) {
-    // keep previous (do not break UI)
-    return false;
+    const eurPerGram = goldEurPerOunce / OUNCE_TO_GRAM;
+
+    state.goldPerGram999 = eurPerGram;
+    state.lastUpdated = data.timestamp ? new Date(Number(data.timestamp) * 1000) : new Date();
+
+    localStorage.setItem("fg_cache_price999", JSON.stringify(state.goldPerGram999));
+    localStorage.setItem("fg_cache_ts", String(state.lastUpdated.getTime()));
+
+    updateAll();
+  } catch (e){
+    // если упало — не стираем кеш, просто оставляем как есть
+    updateAll();
   }
 }
 
-function updateRowPricesOnly() {
-  const items = [...document.querySelectorAll(".item")];
+/* -------- Tabs -------- */
 
-  items.forEach(el => {
-    const probe = Number(el.dataset.probe);
-    const sub = el.querySelector(".subvalue");
-
-    if (Number.isFinite(baseEurPerGram999)) {
-      const perGram = baseEurPerGram999 * (probe / 999.9);
-      sub.textContent = fmtPerGram(perGram);
-    } else {
-      sub.textContent = "— " + CURRENCY_SYMBOL + " / 1g";
-    }
-  });
-
-  if (Number.isFinite(baseEurPerGram999)) {
-    pricePerGramEl.textContent = fmtMoney(baseEurPerGram999);
-  } else {
-    pricePerGramEl.textContent = "—";
-  }
+function setTab(tab){
+  const isCalc = tab === "calc";
+  tabCalc.classList.toggle("active", isCalc);
+  tabBuy.classList.toggle("active", !isCalc);
+  viewCalc.classList.toggle("active", isCalc);
+  viewBuy.classList.toggle("active", !isCalc);
 }
 
-function updateAllFields() {
-  // weights in all rows (based on pure999Weight)
-  const items = [...document.querySelectorAll(".item")];
+/* -------- Reset -------- */
 
-  items.forEach(el => {
-    const probe = Number(el.dataset.probe);
-    const input = el.querySelector(".massInput");
-
-    // m_alloy = pure999Weight * 999.9 / probe
-    const alloyW = pure999Weight * (999.9 / probe);
-
-    if (probe === activeProbe) {
-      // keep user typing
-    } else {
-      input.value = pure999Weight > 0
-        ? alloyW.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-        : "";
-    }
-  });
-
-  // bottom card
-  pureWeightEl.textContent = fmtGram(pure999Weight);
-
-  if (Number.isFinite(baseEurPerGram999) && pure999Weight > 0) {
-    const total = pure999Weight * baseEurPerGram999;
-    totalPriceEl.textContent = fmtMoney(total);
-  } else if (pure999Weight === 0) {
-    totalPriceEl.textContent = "—";
-  } else {
-    totalPriceEl.textContent = "—";
-  }
-
-  // prices never disappear
-  updateRowPricesOnly();
-
-  // buy view update
-  updateBuyGold();
+function resetAll(){
+  state.activeProbe = 999.9;
+  state.activeInput = "";
+  renderList();
+  updateAll();
 }
 
-function updateBuyGold() {
-  buyUpdateEl.textContent = liveUpdateEl.textContent || "—";
+/* -------- Terms modal -------- */
 
-  if (Number.isFinite(baseEurPerGram999)) {
-    buyBasePriceEl.textContent = fmtMoney(baseEurPerGram999) + " / 1g";
-  } else {
-    buyBasePriceEl.textContent = "—";
-  }
-
-  shopListEl.innerHTML = "";
-
-  SHOP_ITEMS.forEach(it => {
-    const box = document.createElement("div");
-    box.className = "shopItem";
-
-    const top = document.createElement("div");
-    top.className = "shopTop";
-
-    const name = document.createElement("div");
-    name.className = "shopName";
-    name.textContent = it.name;
-
-    const gram = document.createElement("div");
-    gram.className = "shopGram";
-    gram.textContent = `${it.grams} g (999.9)`;
-
-    top.appendChild(name);
-    top.appendChild(gram);
-
-    const price = document.createElement("div");
-    price.className = "shopPrice";
-    price.textContent = Number.isFinite(baseEurPerGram999)
-      ? fmtMoney(it.grams * baseEurPerGram999)
-      : "—";
-
-    const sub = document.createElement("div");
-    sub.className = "shopSub";
-    sub.innerHTML = `
-      <div>Per gram</div>
-      <div>${Number.isFinite(baseEurPerGram999) ? fmtPerGram(baseEurPerGram999) : "— " + CURRENCY_SYMBOL + " / 1g"}</div>
-    `;
-
-    box.appendChild(top);
-    box.appendChild(price);
-    box.appendChild(sub);
-
-    shopListEl.appendChild(box);
-  });
+function openTerms(){
+  termsModal.classList.add("show");
+  termsModal.setAttribute("aria-hidden", "false");
 }
 
-// ====== TABS ======
-function setupTabs() {
-  tabBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      tabBtns.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-
-      const tab = btn.dataset.tab;
-      if (tab === "calc") {
-        viewCalc.classList.add("active");
-        viewBuy.classList.remove("active");
-      } else {
-        viewBuy.classList.add("active");
-        viewCalc.classList.remove("active");
-      }
-
-      updateBuyGold();
-    });
-  });
+function closeTerms(){
+  termsModal.classList.remove("show");
+  termsModal.setAttribute("aria-hidden", "true");
 }
 
-// ====== CONTROLS ======
-function setupControls() {
-  resetBtn.addEventListener("click", () => {
-    pure999Weight = 0;
+/* -------- Contacts -------- */
 
-    [...document.querySelectorAll(".massInput")].forEach(inp => inp.value = "");
-    setActive(999.9);
-
-    updateAllFields();
-  });
-}
-
-// ====== CONTACT LINKS ======
-function setupContacts() {
+function buildLinks(){
+  // Telegram deep link
   tgBtn.href = `https://t.me/${encodeURIComponent(TELEGRAM_USERNAME)}`;
-  waBtn.href = `https://wa.me/${encodeURIComponent(WHATSAPP_NUMBER.replace(/\+/g,""))}`;
+
+  // WhatsApp
+  const wa = WHATSAPP_NUMBER.replace(/[^\d+]/g, "");
+  waBtn.href = `https://wa.me/${wa.replace("+","")}`;
 }
 
-// ====== TERMS MODAL ======
-function setupTerms() {
-  function open() {
-    termsOverlay.classList.add("show");
-    termsOverlay.setAttribute("aria-hidden", "false");
-  }
-  function close() {
-    termsOverlay.classList.remove("show");
-    termsOverlay.setAttribute("aria-hidden", "true");
-  }
+/* -------- utils -------- */
 
-  openTermsBtn.addEventListener("click", open);
-  closeTermsBtn.addEventListener("click", close);
-
-  // click outside modal closes
-  termsOverlay.addEventListener("click", (e) => {
-    if (e.target === termsOverlay) close();
-  });
-
-  // esc closes
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") close();
-  });
+function safeJsonParse(s){
+  try{ return JSON.parse(s); } catch { return null; }
 }
 
-// ====== LIVE UPDATE LOOP ======
-async function tick() {
-  liveUpdateEl.textContent = nowStamp();
-  await fetchGoldPriceEurPerGram999();
-  updateAllFields();
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
-function registerSW() {
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-  }
-}
+/* -------- init -------- */
 
-// ====== INIT ======
 (function init(){
-  renderRows();
-  setupTabs();
-  setupControls();
-  setupContacts();
-  setupTerms();
-  registerSW();
+  renderList();
+  buildLinks();
 
-  // first update now, then every 60 seconds
-  tick();
-  setInterval(tick, 60_000);
+  tabCalc.addEventListener("click", () => setTab("calc"));
+  tabBuy.addEventListener("click", () => setTab("buy"));
+  resetBtn.addEventListener("click", resetAll);
 
-  // ensure UI stable
-  updateRowPricesOnly();
-  updateAllFields();
+  termsBtn.addEventListener("click", openTerms);
+  termsOverlay.addEventListener("click", closeTerms);
+  termsClose.addEventListener("click", closeTerms);
+  termsOk.addEventListener("click", closeTerms);
+
+  // старт
+  updateAll();
+  loadGoldPrice();
+
+  // автообновление
+  setInterval(loadGoldPrice, 60 * 1000);
+
+  // service worker (если у тебя он есть)
+  if ("serviceWorker" in navigator){
+    navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
+  }
 })();
