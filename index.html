@@ -1,137 +1,180 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#1e1e1e" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fine Gold</title>
-
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#1e1e1e" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
-
 <body>
   <div class="app">
-    <!-- HEADER (как у тебя сейчас) -->
+
     <header class="header">
-      <div class="brand">
-        <img class="logo" src="https://i.imgur.com/lerWRb0.png" alt="Fine Gold logo" />
-        <div class="brandText">
-          <div class="title">Fine Gold</div>
-          <div class="subtitle">Gold mass calculator • 999.9</div>
+      <div class="brandRow">
+        <div class="brand">
+          <img class="logo" src="https://i.imgur.com/b9PjhJu.png" alt="Fine Gold logo" />
+          <div class="brandText">
+            <div class="title">Fine Gold</div>
+            <div class="subtitle">Gold mass calculator • 999.9</div>
+          </div>
         </div>
+
+        <button class="helpBtn" id="openTerms" type="button" aria-label="Terms of Use">?</button>
       </div>
 
-      <!-- КНОПКИ ОСТАЮТСЯ ТУТ (НЕ ТРОГАЕМ) -->
-      <div class="topTabs" role="tablist">
-        <button id="tabCalc" class="tabBtn active" type="button">Calculation</button>
-        <button id="tabBuy" class="tabBtn" type="button">Buy Gold</button>
+      <!-- Tabs (как у тебя) -->
+      <div class="topTabs">
+        <button class="tabBtn active" data-tab="calc">Calculation</button>
+        <button class="tabBtn" data-tab="buy">Buy Gold</button>
       </div>
     </header>
 
     <main class="content">
-      <!-- ===== CALC VIEW ===== -->
-      <section id="viewCalc" class="card view active">
-        <!-- Заголовок можно оставить или убрать — кнопки не трогаем -->
-        <h2 class="sectionTitle">Calculation</h2>
+      <!-- CALC VIEW -->
+      <section class="view active" id="view-calc">
+        <div class="card">
+          <h2>Calculation</h2>
 
-        <!-- Главная строка 999.9 -->
-        <div class="main999 item active" data-probe="999.9" id="main999">
-          <div class="left">
-            <span class="probe">999.9°</span>
-            <span class="karat">24K</span>
-          </div>
+          <div class="list" id="list"></div>
 
-          <div class="right">
-            <div class="inputRow">
-              <input id="main999Input" class="massInput" type="number" inputmode="decimal" step="any" placeholder="" />
-              <span class="unit">g</span>
+          <div class="priceCard">
+            <div class="priceHeader">
+              <div class="priceTitle">Price</div>
             </div>
-            <div id="main999Sub" class="subvalue">— EUR / 1 g</div>
+
+            <!-- ONLY RESET (center) -->
+            <div class="controls controlsCenter">
+              <button class="cur resetOnly" id="resetBtn" type="button">Reset</button>
+            </div>
+
+            <div class="price-line">
+              <div>Price / 1g (24K / 999.9):</div>
+              <div id="pricePerGram">—</div>
+            </div>
+
+            <div class="price-line">
+              <div>Weight (24K / 999.9):</div>
+              <div id="pureWeight">0,00 g</div>
+            </div>
+
+            <div class="price-line total">
+              <div>Total (24K / 999.9):</div>
+              <div id="totalPrice">—</div>
+            </div>
+
+            <div class="liveBottom">
+              <span>Live update:</span>
+              <span class="liveValue" id="liveUpdate">—</span>
+            </div>
           </div>
         </div>
-
-        <div class="divider"></div>
-
-        <!-- Остальные пробы -->
-        <div class="list" id="list"></div>
-
-        <!-- PRICE BOX -->
-        <section class="priceCard">
-          <div class="priceHeader">
-            <h3 class="priceTitle">Price</h3>
-          </div>
-
-          <div class="controls">
-            <button id="eurBtn" class="cur active" type="button">EUR</button>
-            <button id="usdBtn" class="cur" type="button">USD</button>
-            <button id="resetBtn" class="cur reset" type="button">Reset</button>
-          </div>
-
-          <div class="price-line">
-            <span>Price / 1g (24K / 999.9):</span>
-            <strong id="pricePerGram">—</strong>
-          </div>
-
-          <div class="price-line">
-            <span>Weight (24K / 999.9):</span>
-            <strong id="eq9999">0.00 g</strong>
-          </div>
-
-          <div class="price-line total">
-            <span>Total (24K / 999.9):</span>
-            <strong id="totalPrice">—</strong>
-          </div>
-
-          <div class="liveBottom">
-            <span class="liveLabel">Live update:</span>
-            <strong id="liveStamp" class="liveValue">—</strong>
-          </div>
-        </section>
       </section>
 
-      <!-- ===== BUY VIEW ===== -->
-      <section id="viewBuy" class="card view">
-        <div class="buyHeader">
-          <h2 class="sectionTitle">Buy Gold</h2>
-          <div class="badge">ONLY for Baltic (LT / LV / EE)</div>
-        </div>
+      <!-- BUY VIEW -->
+      <section class="view" id="view-buy">
+        <div class="card">
+          <h2>Buy Gold</h2>
 
-        <div id="balticGate" class="gateBox">
-          <div class="gateTitle">Available only for Baltic countries</div>
-          <div class="gateText">
-            Gold bars purchase is available only by contact.
-            Telegram or WhatsApp.
+          <div class="gateBox">
+            <div class="gateTitle">Only for Baltic countries</div>
+            <div class="gateText">
+              Gold bars purchase is available only by contact.<br/>
+              Telegram or WhatsApp.
+            </div>
           </div>
-        </div>
 
-        <div class="buyCard">
-          <div class="buyRow">
-            <div class="buyLabel">Live price (24K / 999.9)</div>
-            <div class="buyValue" id="buyLivePrice">—</div>
-          </div>
-          <div class="buyRow">
-            <div class="buyLabel">Currency</div>
-            <div class="buyValue" id="buyCurrency">EUR</div>
-          </div>
-          <div class="buyNote">
-            Prices are <b>estimated</b>. Final price is confirmed by call/message. No online payment.
-          </div>
-        </div>
+          <div class="buyCard">
+            <div class="buyRow">
+              <div class="buyLabel">Base price (24K / 999.9)</div>
+              <div class="buyValue" id="buyBasePrice">—</div>
+            </div>
+            <div class="buyRow">
+              <div class="buyLabel">Last update</div>
+              <div class="buyValue" id="buyUpdate">—</div>
+            </div>
 
-        <!-- список слитков (НЕ ПУСТОЙ — генерируется JS) -->
-        <div class="shopList" id="shopList"></div>
-
-        <div class="contactBox">
-          <div class="contactTitle">Contact us</div>
-          <div class="contactButtons">
-            <a id="tgBtn" class="cbtn" href="#" target="_blank" rel="noopener">Telegram</a>
-            <a id="waBtn" class="cbtn outline" href="#" target="_blank" rel="noopener">WhatsApp</a>
-            <a id="callBtn" class="cbtn outline" href="#">Call</a>
+            <div class="buyNote">
+              Prices below are indicative and can be confirmed by contact.
+            </div>
           </div>
-          <div class="contactHint">Order confirmed by phone.</div>
+
+          <div class="shopList" id="shopList"></div>
+
+          <div class="contactBox">
+            <div class="contactTitle">Contact us</div>
+            <div class="contactButtons">
+              <a class="cbtn" id="tgBtn" href="#" target="_blank" rel="noopener">Telegram</a>
+              <a class="cbtn outline" id="waBtn" href="#" target="_blank" rel="noopener">WhatsApp</a>
+            </div>
+            <div class="contactHint">
+              Reminder: before Google Play, update numbers in app.js
+            </div>
+          </div>
+
         </div>
       </section>
     </main>
+
+  </div>
+
+  <!-- TERMS MODAL -->
+  <div class="modalOverlay" id="termsOverlay" aria-hidden="true">
+    <div class="modal">
+      <div class="modalHeader">
+        <div class="modalTitle">Terms of Use</div>
+        <button class="modalClose" id="closeTerms" type="button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modalBody" id="termsText">
+        <div class="termsBlock">
+          <div class="termsH">1) Information only</div>
+          <div class="termsP">
+            Fine Gold provides informational calculations only. The results are approximate and may differ from real market conditions.
+          </div>
+        </div>
+
+        <div class="termsBlock">
+          <div class="termsH">2) No financial advice</div>
+          <div class="termsP">
+            The app does not provide financial, investment, or legal advice. You are responsible for any decisions you make.
+          </div>
+        </div>
+
+        <div class="termsBlock">
+          <div class="termsH">3) Prices & accuracy</div>
+          <div class="termsP">
+            Prices shown are indicative and may change at any time. We do not guarantee accuracy, availability, or timeliness.
+          </div>
+        </div>
+
+        <div class="termsBlock">
+          <div class="termsH">4) Buy Gold (Baltic countries)</div>
+          <div class="termsP">
+            Purchase is available only by contact (Telegram/WhatsApp) and only for Baltic countries. Final terms are confirmed during contact.
+          </div>
+        </div>
+
+        <div class="termsBlock">
+          <div class="termsH">5) Liability</div>
+          <div class="termsP">
+            To the maximum extent permitted by law, Fine Gold is not liable for losses or damages arising from use of the app.
+          </div>
+        </div>
+
+        <div class="termsBlock">
+          <div class="termsH">6) Contact</div>
+          <div class="termsP">
+            If you have questions, contact us via Telegram or WhatsApp.
+          </div>
+        </div>
+
+        <div class="termsFoot">
+          You can update this text anytime (recommended to review with a lawyer before Google Play).
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="./app.js"></script>
