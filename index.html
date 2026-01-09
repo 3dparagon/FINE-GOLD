@@ -3,141 +3,93 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#1e1e1e" />
   <title>Fine Gold</title>
 
   <link rel="manifest" href="./manifest.json" />
-  <meta name="theme-color" content="#1e1e1e" />
-
+  <link rel="apple-touch-icon" href="https://i.imgur.com/lerWRb0.png" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 
 <body>
   <div class="app">
     <header class="header">
-      <div class="headerTop">
-        <div class="brand">
-          <!-- ТВОЙ ЛОГО (можешь заменить ссылку на свою) -->
-          <img class="logo" alt="Fine Gold" src="https://i.imgur.com/b9PjhJu.png" />
-          <div class="brandText">
-            <div class="title">Fine Gold</div>
-            <div class="subtitle">Gold mass calculator • 999.9</div>
-          </div>
-        </div>
-
-        <button id="termsBtn" class="helpBtn" type="button" aria-label="Terms">?</button>
-      </div>
-
-      <!-- КНОПКИ ТАБОВ (как ты просил — под логотипом) -->
-      <div class="topTabs">
-        <button id="tabCalc" class="tabBtn active" type="button">Calculation</button>
-        <button id="tabBuy" class="tabBtn" type="button">Buy Gold</button>
+      <div class="brand">
+        <img class="logo" src="https://i.imgur.com/lerWRb0.png" alt="Fine Gold logo" />
+        <span class="title">Fine Gold</span>
       </div>
     </header>
 
     <main class="content">
-      <!-- VIEW: Calculation -->
-      <section id="viewCalc" class="view active">
-        <div class="card">
-          <h2>Calculation</h2>
+      <section class="card">
+        <h2>Calculation</h2>
 
-          <div class="list" id="list"></div>
+        <!-- Главная проба 999.9 -->
+        <div class="main999" id="main999">
+          <div class="left">
+            <span class="probe">999.9°</span>
+            <span class="karat">24K</span>
+          </div>
 
-          <div class="priceCard">
-            <div class="priceHeader">
-              <div class="priceTitle">Price</div>
+          <div class="right">
+            <div class="inputRow">
+              <input id="main999Input" class="massInput" type="number" inputmode="decimal" step="any" placeholder="" />
+              <span class="unit">g</span>
             </div>
-
-            <div class="controls">
-              <button id="resetBtn" class="cur reset" type="button">Reset</button>
-            </div>
-
-            <div class="price-line">
-              <div>Price / 1g (24K / 999.9):</div>
-              <div id="pricePerG">—</div>
-            </div>
-            <div class="price-line">
-              <div>Weight (24K / 999.9):</div>
-              <div id="pureWeight">—</div>
-            </div>
-            <div class="price-line total">
-              <div>Total (24K / 999.9):</div>
-              <div id="totalPrice">—</div>
-            </div>
-
-            <div class="liveBottom">
-              <span>Live update:</span>
-              <span id="liveUpdate" class="liveValue">—</span>
-            </div>
+            <div id="main999Sub" class="subvalue">— EUR / 1 g</div>
           </div>
         </div>
-      </section>
 
-      <!-- VIEW: Buy Gold -->
-      <section id="viewBuy" class="view">
-        <div class="card">
-          <div class="buyHeader">
-            <h2 class="buyTitle">Buy Gold</h2>
-            <div class="badge">Only for Baltic countries</div>
+        <div class="divider"></div>
+
+        <!-- Список проб -->
+        <div class="list" id="list"></div>
+
+        <!-- Плашка цены -->
+        <section class="priceCard">
+          <div class="priceHeader">
+            <h3 class="priceTitle">Price</h3>
           </div>
 
-          <div class="gateBox">
-            <div class="gateTitle">Only for Baltic countries</div>
-            <div class="gateText">
-              Gold bars purchase is available only by contact.<br />
-              Telegram or WhatsApp.
-            </div>
+          <!-- Кнопки по центру -->
+          <div class="controls">
+            <button id="eurBtn" class="cur active">EUR</button>
+            <button id="usdBtn" class="cur">USD</button>
+            <button id="resetBtn" class="cur reset">Reset</button>
           </div>
 
-          <div class="buyCard">
-            <div class="buyRow">
-              <div class="buyLabel">Spot price (24K / 999.9):</div>
-              <div id="buySpot" class="buyValue">—</div>
-            </div>
-            <div class="buyRow">
-              <div class="buyLabel">Updated:</div>
-              <div id="buyUpdated" class="buyValue">—</div>
-            </div>
-            <div class="buyNote">
-              Final price depends on availability, delivery and invoice.
-            </div>
+          <div class="price-line">
+            <span>Price / 1g (24K / 999.9):</span>
+            <strong id="pricePerGram">—</strong>
           </div>
 
-          <div class="contactBox">
-            <div class="contactTitle">Contact us</div>
-            <div class="contactButtons">
-              <a id="tgBtn" class="cbtn" href="#" target="_blank" rel="noopener">Telegram</a>
-              <a id="waBtn" class="cbtn outline" href="#" target="_blank" rel="noopener">WhatsApp</a>
-            </div>
-            <div class="contactHint">We answer by contact only.</div>
+          <div class="price-line">
+            <span>Weight (24K / 999.9):</span>
+            <strong id="eq9999">0.00 g</strong>
           </div>
-        </div>
+
+          <div class="price-line total">
+            <span>Total (24K / 999.9):</span>
+            <strong id="totalPrice">—</strong>
+          </div>
+
+          <!-- Live update внизу -->
+          <div class="liveBottom">
+            <span class="liveLabel">Live update:</span>
+            <strong id="liveStamp" class="liveValue">—</strong>
+          </div>
+        </section>
       </section>
     </main>
   </div>
 
-  <!-- TERMS MODAL -->
-  <div id="termsModal" class="modal" aria-hidden="true">
-    <div class="modalOverlay" id="termsOverlay"></div>
-    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
-      <div class="modalHead">
-        <div id="termsTitle" class="modalTitle">Terms of Use</div>
-        <button id="termsClose" class="modalClose" type="button" aria-label="Close">×</button>
-      </div>
-
-      <div class="modalBody">
-        <p><b>Information only.</b> Prices are indicative spot calculations and may differ from market quotes and dealer prices.</p>
-        <p><b>No financial advice.</b> This app does not provide investment, legal, or tax advice.</p>
-        <p><b>Accuracy.</b> We try to keep data updated, but we do not guarantee correctness or uninterrupted availability.</p>
-        <p><b>Liability.</b> By using this app you agree that you use it at your own risk.</p>
-        <p><b>Contacts.</b> “Buy Gold” is available only by contact and only for Baltic countries.</p>
-      </div>
-
-      <div class="modalFoot">
-        <button id="termsOk" class="tabBtn active" type="button">OK</button>
-      </div>
-    </div>
-  </div>
-
   <script src="./app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>

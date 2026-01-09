@@ -18,19 +18,10 @@ body{
 /* header */
 .header{
   background:#1e1e1e;
-  padding:12px 12px 10px;
+  padding:12px 15px;
   border-bottom:1px solid #2a2a2a;
   display:flex;
-  flex-direction:column;
-  gap:10px;
-  align-items:center;
-}
-
-.headerTop{
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+  justify-content:center;
 }
 
 .brand{
@@ -39,92 +30,40 @@ body{
   gap:12px;
 }
 
-.brandText{ display:flex; flex-direction:column; gap:2px; }
+/* ✅ логотип больше */
+.logo{
+  width:42px;
+  height:42px;
+  object-fit:contain;
+  display:block;
+}
+
+/* ✅ Fine Gold крупнее */
 .title{
-  font-size:26px;
+  font-size:24px;
   font-weight:800;
   line-height:1;
   letter-spacing:0.2px;
 }
-.subtitle{
-  font-size:11px;
-  color:#bdbdbd;
-}
-
-/* logo 2x + glow */
-.logo{
-  width:84px;
-  height:84px;
-  object-fit:contain;
-  display:block;
-  animation: goldGlow 4s ease-in-out infinite;
-  filter: drop-shadow(0 0 6px rgba(245,199,106,.35));
-}
-
-@keyframes goldGlow{
-  0%{
-    filter:
-      drop-shadow(0 0 4px rgba(245,199,106,.25))
-      drop-shadow(0 0 8px rgba(245,199,106,.15));
-  }
-  50%{
-    filter:
-      drop-shadow(0 0 10px rgba(255,214,107,.55))
-      drop-shadow(0 0 18px rgba(255,214,107,.35));
-  }
-  100%{
-    filter:
-      drop-shadow(0 0 4px rgba(245,199,106,.25))
-      drop-shadow(0 0 8px rgba(245,199,106,.15));
-  }
-}
-
-.helpBtn{
-  width:34px;
-  height:34px;
-  border-radius:10px;
-  background:transparent;
-  border:1px solid rgba(245,199,106,.75);
-  color:#f5c76a;
-  cursor:pointer;
-  font-weight:900;
-  line-height:1;
-}
-.helpBtn:hover{ background:rgba(245,199,106,.10); }
-
-/* tabs */
-.topTabs{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  margin-top:6px; /* кнопки под логотипом */
-}
-
-.tabBtn{
-  background:transparent;
-  border:1px solid rgba(245,199,106,.75);
-  color:#f5c76a;
-  padding:7px 14px;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:13px;
-}
-
-.tabBtn.active{
-  background:rgba(245,199,106,.12);
-  box-shadow:0 0 0 2px rgba(245,199,106,.22);
-}
-
-/* views */
-.view{ display:none; }
-.view.active{ display:block; }
 
 .card{ padding:15px; }
 h2{ margin:0 0 12px; font-size:28px; }
 
+.main999{
+  border:2px solid #f5c76a;
+  border-radius:12px;
+  padding:10px;
+  margin-bottom:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  background:rgba(245,199,106,.08);
+}
+
 .divider{ height:1px; background:#444; margin:14px 0 12px; }
 
-/* rows */
+/* ✅ ВСЕ карточки выглядят активными (без тусклости) */
 .list .item{
   display:flex;
   justify-content:space-between;
@@ -137,7 +76,10 @@ h2{ margin:0 0 12px; font-size:28px; }
   background:rgba(255,255,255,.01);
 }
 
-.item.active{ box-shadow:0 0 0 2px rgba(255,214,107,.35); }
+/* можно оставить лёгкую разницу активной строки (НЕ тусклость), но не обязательно */
+.item.active{
+  box-shadow:0 0 0 2px rgba(245,199,106,.20);
+}
 
 .left{ display:flex; gap:10px; align-items:baseline; }
 .probe{ font-weight:800; }
@@ -152,6 +94,7 @@ h2{ margin:0 0 12px; font-size:28px; }
 
 .inputRow{ display:flex; gap:6px; align-items:center; }
 
+/* input */
 .massInput{
   width:140px;
   background:transparent;
@@ -162,12 +105,19 @@ h2{ margin:0 0 12px; font-size:28px; }
   text-align:right;
 }
 
+/* ✅ НЕ делаем тусклым readonly (чтобы все строки были “подсвечены”) */
+.massInput[readonly]{
+  opacity:1;
+}
+
+/* ✅ ЯРКО-ЗОЛОТОЙ ФОКУС: понятно, какую пробу выбрали */
 .massInput:focus{
   outline:none;
   border-color:#ffd66b;
   box-shadow:0 0 0 2px rgba(255,214,107,.35), 0 0 18px rgba(255,214,107,.12);
 }
 
+/* убрать стрелки у number (на части браузеров) */
 .massInput::-webkit-outer-spin-button,
 .massInput::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
 
@@ -186,9 +136,11 @@ h2{ margin:0 0 12px; font-size:28px; }
 .priceHeader{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
 .priceTitle{ margin:0; font-size:16px; font-weight:800; letter-spacing:.2px; }
 
+/* ✅ кнопки по центру */
 .controls{
   display:flex;
   justify-content:center;
+  gap:10px;
   margin-bottom:10px;
 }
 
@@ -196,17 +148,15 @@ h2{ margin:0 0 12px; font-size:28px; }
   background:transparent;
   border:1px solid #f5c76a;
   color:#f5c76a;
-  padding:6px 14px;
-  border-radius:8px;
+  padding:4px 12px;
+  border-radius:6px;
   cursor:pointer;
   font-size:13px;
   line-height:1;
 }
 
-.reset{
-  border-color:#aaa;
-  color:#ddd;
-}
+.cur.active{ background:#f5c76a; color:#2b2b2b; }
+.reset{ border-color:#aaa; color:#aaa; }
 
 .price-line{
   display:flex;
@@ -221,6 +171,7 @@ h2{ margin:0 0 12px; font-size:28px; }
   margin-top:8px;
 }
 
+/* Live update снизу */
 .liveBottom{
   margin-top:10px;
   padding-top:6px;
@@ -234,130 +185,3 @@ h2{ margin:0 0 12px; font-size:28px; }
 }
 
 .liveValue{ color:#f5c76a; font-weight:600; }
-
-/* BUY GOLD */
-.buyHeader{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom:10px;
-}
-.buyTitle{ margin:0; }
-.badge{
-  font-size:11px;
-  color:#1e1e1e;
-  background:#f5c76a;
-  padding:6px 10px;
-  border-radius:999px;
-  font-weight:800;
-  white-space:nowrap;
-}
-
-.gateBox{
-  border:1px solid rgba(245,199,106,.55);
-  background:rgba(245,199,106,.06);
-  border-radius:12px;
-  padding:10px;
-  margin-bottom:12px;
-}
-.gateTitle{ font-weight:800; font-size:13px; margin-bottom:4px; }
-.gateText{ color:#c9c9c9; font-size:12px; line-height:1.35; }
-
-.buyCard{
-  background:#1e1e1e;
-  border:1px solid #444;
-  border-radius:12px;
-  padding:12px;
-  margin-bottom:12px;
-}
-.buyRow{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  font-size:13px;
-  margin-bottom:6px;
-}
-.buyLabel{ color:#c9c9c9; }
-.buyValue{ font-weight:800; }
-.buyNote{
-  margin-top:8px;
-  font-size:12px;
-  color:#c9c9c9;
-  line-height:1.35;
-}
-
-.contactBox{
-  background:#1e1e1e;
-  border:1px solid #444;
-  border-radius:12px;
-  padding:12px;
-}
-.contactTitle{ font-weight:900; margin-bottom:10px; }
-.contactButtons{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-.cbtn{
-  text-decoration:none;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  border:1px solid #f5c76a;
-  color:#f5c76a;
-  padding:8px 14px;
-  border-radius:10px;
-  font-weight:800;
-}
-.cbtn:hover{ background:rgba(245,199,106,.10); }
-.cbtn.outline{ border-color:#aaa; color:#ddd; }
-.contactHint{ margin-top:10px; font-size:12px; color:#c9c9c9; text-align:center; }
-
-/* MODAL */
-.modal{ position:fixed; inset:0; display:none; z-index:9999; }
-.modal.show{ display:block; }
-.modalOverlay{
-  position:absolute; inset:0;
-  background:rgba(0,0,0,.55);
-}
-.modalCard{
-  position:absolute;
-  left:50%; top:50%;
-  transform:translate(-50%,-50%);
-  width:min(420px, calc(100% - 24px));
-  background:#1e1e1e;
-  border:1px solid rgba(245,199,106,.45);
-  border-radius:14px;
-  box-shadow:0 12px 30px rgba(0,0,0,.55);
-  overflow:hidden;
-}
-.modalHead{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px 12px 10px;
-  border-bottom:1px solid #2a2a2a;
-}
-.modalTitle{ font-weight:900; }
-.modalClose{
-  background:transparent;
-  border:1px solid rgba(245,199,106,.55);
-  color:#f5c76a;
-  width:34px;
-  height:34px;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:18px;
-  line-height:1;
-}
-.modalBody{
-  padding:12px;
-  color:#e7e7e7;
-  font-size:13px;
-  line-height:1.45;
-}
-.modalBody b{ color:#f5c76a; }
-.modalFoot{
-  padding:10px 12px 12px;
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
-  border-top:1px solid #2a2a2a;
-}
