@@ -2,6 +2,79 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Fine Gold</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- anti cache -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+</head>
+
+<body>
+  <header class="top">
+    <div class="logo">Fine Gold</div>
+
+    <div class="top-buttons">
+      <button id="btnCalc">Calculation</button>
+      <button id="btnBuy">Buy Gold</button>
+    </div>
+
+    <button id="btnTerms" class="help">?</button>
+  </header>
+
+  <!-- CALCULATION -->
+  <section id="calcSection">
+    <h2>Calculation</h2>
+
+    <div id="alloyList"></div>
+
+    <div class="price-box">
+      <button id="resetBtn">Reset</button>
+
+      <div>Price / 1g (24K / 999.9): <span id="pricePerGram">—</span></div>
+      <div>Weight (24K / 999.9): <span id="weightTotal">—</span></div>
+      <div><b>Total:</b> <span id="totalPrice">—</span></div>
+
+      <div class="update">Live update: <span id="lastUpdate">—</span></div>
+    </div>
+  </section>
+
+  <!-- BUY GOLD -->
+  <section id="buySection" style="display:none">
+    <h2>Buy Gold</h2>
+
+    <p>Only for Baltic countries</p>
+
+    <div class="contact">
+      <a href="https://t.me/fine_gold_riga" target="_blank">Telegram</a>
+    </div>
+  </section>
+
+  <!-- TERMS -->
+  <div id="termsModal" class="modal" style="display:none">
+    <div class="modal-box">
+      <h3>Terms of Use</h3>
+      <p>
+        This application provides indicative gold price calculations only.<br><br>
+        Prices are informational and may differ from final offers.<br>
+        Availability and delivery are not guaranteed.<br><br>
+        Contact is provided for informational purposes only.
+      </p>
+      <button id="closeTerms">Close</button>
+    </div>
+  </div>
+
+  <script src="app.js?v=NO_CACHE"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Fine Gold</title>
 
