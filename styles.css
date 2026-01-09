@@ -1,111 +1,176 @@
+/* ========== GLOBAL ========== */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
   font-family: Arial, sans-serif;
 }
 
 body {
-  margin: 0;
-  background: #1c1c1c;
-  color: #f5c66a;
+  background: #1e1e1e;
+  color: #f5c76a;
+  padding: 10px;
 }
 
+/* ========== HEADER ========== */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background: #111;
+  padding-bottom: 8px;
 }
 
 .logo {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.logo img {
-  width: 40px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #f5c76a;
 }
 
 .help-btn {
-  border: 1px solid #f5c66a;
+  font-size: 18px;
   background: transparent;
-  color: #f5c66a;
-  border-radius: 50%;
+  border: 1px solid #f5c76a;
+  color: #f5c76a;
+  border-radius: 8px;
   width: 36px;
   height: 36px;
   cursor: pointer;
 }
 
-.nav-buttons {
+/* ========== NAV BUTTONS ========== */
+.top-buttons {
   display: flex;
-  justify-content: center;
   gap: 10px;
-  margin: 15px;
+  margin-bottom: 12px;
 }
 
-.nav-buttons button {
+.top-buttons button {
+  padding: 8px 14px;
+  font-size: 14px;
+  color: #f5c76a;
   background: transparent;
-  border: 1px solid #f5c66a;
-  color: #f5c66a;
-  padding: 8px 16px;
+  border: 1px solid #f5c76a;
   border-radius: 20px;
   cursor: pointer;
 }
 
-.nav-buttons .active {
-  background: #f5c66a;
+.top-buttons button.active {
+  background: #f5c76a;
   color: #111;
 }
 
+/* ========== CALCULATION ========== */
 section {
-  padding: 15px;
+  margin-top: 10px;
 }
 
 .row {
-  border: 1px solid #f5c66a;
-  border-radius: 12px;
-  padding: 10px;
-  margin-bottom: 10px;
+  border: 1px solid #f5c76a;
+  border-radius: 10px;
+  padding: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .row input {
-  width: 80px;
+  width: 70px;
+  padding: 4px;
+  background: transparent;
+  border: 1px solid #f5c76a;
+  color: #f5c76a;
+  border-radius: 4px;
+}
+
+.row span {
+  font-size: 13px;
 }
 
 .price-box {
   border: 1px solid #444;
-  padding: 15px;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.price-box button {
+  background: transparent;
+  border: 1px solid #f5c76a;
+  color: #f5c76a;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.update {
+  font-size: 12px;
+  color: #c9c9c9;
+  margin-top: 8px;
+}
+
+/* ========== BUY GOLD ========== */
+#buySection {
+  font-size: 14px;
+}
+
+#buySection .contact {
+  margin-top: 12px;
+}
+
+#buySection .contact a {
+  display: inline-block;
+  padding: 8px 16px;
+  color: #f5c76a;
+  border: 1px solid #f5c76a;
   border-radius: 12px;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.hidden {
-  display: none;
-}
-
+/* ========== TERMS MODAL ========== */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.7);
+  background: rgba(0, 0, 0, 0.75);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
-.modal-content {
+.modal-box {
   background: #111;
-  padding: 20px;
+  padding: 16px 20px;
   border-radius: 12px;
-  max-width: 320px;
+  border: 1px solid #444;
+  max-width: 360px;
+  width: 90%;
+}
+
+.modal-box h3 {
+  color: #f5c76a;
+  margin-bottom: 10px;
+  font-size: 18px;
   text-align: center;
 }
 
-.btn {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 10px 20px;
-  border: 1px solid #f5c66a;
-  border-radius: 20px;
-  color: #f5c66a;
-  text-decoration: none;
+.modal-box p {
+  font-size: 13px;
+  color: #ddd;
+  line-height: 1.4;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.modal-box button {
+  background: transparent;
+  border: 1px solid #f5c76a;
+  color: #f5c76a;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
 }
