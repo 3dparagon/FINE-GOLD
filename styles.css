@@ -1,176 +1,363 @@
-/* ========== GLOBAL ========== */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background: radial-gradient(circle at top, #2f2f2f 0%, #1f1f1f 45%, #141414 100%);
+  color:#f5c76a;
 }
 
-body {
-  background: #1e1e1e;
-  color: #f5c76a;
-  padding: 10px;
+.app{
+  max-width:420px;
+  margin:auto;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
-/* ========== HEADER ========== */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 8px;
+.content{ flex:1; padding-bottom:10px; }
+
+/* header */
+.header{
+  background:#1e1e1e;
+  padding:12px 12px 10px;
+  border-bottom:1px solid #2a2a2a;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  align-items:center;
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: 700;
-  color: #f5c76a;
+.headerTop{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
 
-.help-btn {
-  font-size: 18px;
-  background: transparent;
-  border: 1px solid #f5c76a;
-  color: #f5c76a;
-  border-radius: 8px;
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
 }
 
-/* ========== NAV BUTTONS ========== */
-.top-buttons {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
+.brandText{ display:flex; flex-direction:column; gap:2px; }
+.title{
+  font-size:26px;
+  font-weight:800;
+  line-height:1;
+  letter-spacing:0.2px;
+}
+.subtitle{
+  font-size:11px;
+  color:#bdbdbd;
 }
 
-.top-buttons button {
-  padding: 8px 14px;
-  font-size: 14px;
-  color: #f5c76a;
-  background: transparent;
-  border: 1px solid #f5c76a;
-  border-radius: 20px;
-  cursor: pointer;
+/* logo 2x + glow */
+.logo{
+  width:84px;
+  height:84px;
+  object-fit:contain;
+  display:block;
+  animation: goldGlow 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px rgba(245,199,106,.35));
 }
 
-.top-buttons button.active {
-  background: #f5c76a;
-  color: #111;
+@keyframes goldGlow{
+  0%{
+    filter:
+      drop-shadow(0 0 4px rgba(245,199,106,.25))
+      drop-shadow(0 0 8px rgba(245,199,106,.15));
+  }
+  50%{
+    filter:
+      drop-shadow(0 0 10px rgba(255,214,107,.55))
+      drop-shadow(0 0 18px rgba(255,214,107,.35));
+  }
+  100%{
+    filter:
+      drop-shadow(0 0 4px rgba(245,199,106,.25))
+      drop-shadow(0 0 8px rgba(245,199,106,.15));
+  }
 }
 
-/* ========== CALCULATION ========== */
-section {
-  margin-top: 10px;
+.helpBtn{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  background:transparent;
+  border:1px solid rgba(245,199,106,.75);
+  color:#f5c76a;
+  cursor:pointer;
+  font-weight:900;
+  line-height:1;
+}
+.helpBtn:hover{ background:rgba(245,199,106,.10); }
+
+/* tabs */
+.topTabs{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-top:6px; /* кнопки под логотипом */
 }
 
-.row {
-  border: 1px solid #f5c76a;
-  border-radius: 10px;
-  padding: 8px;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.tabBtn{
+  background:transparent;
+  border:1px solid rgba(245,199,106,.75);
+  color:#f5c76a;
+  padding:7px 14px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:13px;
 }
 
-.row input {
-  width: 70px;
-  padding: 4px;
-  background: transparent;
-  border: 1px solid #f5c76a;
-  color: #f5c76a;
-  border-radius: 4px;
+.tabBtn.active{
+  background:rgba(245,199,106,.12);
+  box-shadow:0 0 0 2px rgba(245,199,106,.22);
 }
 
-.row span {
-  font-size: 13px;
+/* views */
+.view{ display:none; }
+.view.active{ display:block; }
+
+.card{ padding:15px; }
+h2{ margin:0 0 12px; font-size:28px; }
+
+.divider{ height:1px; background:#444; margin:14px 0 12px; }
+
+/* rows */
+.list .item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px;
+  border:1px solid rgba(245,199,106,.65);
+  border-radius:10px;
+  margin-bottom:10px;
+  opacity:1;
+  background:rgba(255,255,255,.01);
 }
 
-.price-box {
-  border: 1px solid #444;
-  padding: 10px;
-  border-radius: 10px;
-  margin-top: 12px;
-  font-size: 14px;
+.item.active{ box-shadow:0 0 0 2px rgba(255,214,107,.35); }
+
+.left{ display:flex; gap:10px; align-items:baseline; }
+.probe{ font-weight:800; }
+.karat{ font-size:12px; color:#c9c9c9; }
+
+.right{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:5px;
 }
 
-.price-box button {
-  background: transparent;
-  border: 1px solid #f5c76a;
-  color: #f5c76a;
-  border-radius: 8px;
-  padding: 6px 12px;
-  cursor: pointer;
-  margin-bottom: 8px;
+.inputRow{ display:flex; gap:6px; align-items:center; }
+
+.massInput{
+  width:140px;
+  background:transparent;
+  border:1px solid rgba(245,199,106,.75);
+  color:#f5c76a;
+  padding:6px 8px;
+  border-radius:6px;
+  text-align:right;
 }
 
-.update {
-  font-size: 12px;
-  color: #c9c9c9;
-  margin-top: 8px;
+.massInput:focus{
+  outline:none;
+  border-color:#ffd66b;
+  box-shadow:0 0 0 2px rgba(255,214,107,.35), 0 0 18px rgba(255,214,107,.12);
 }
 
-/* ========== BUY GOLD ========== */
-#buySection {
-  font-size: 14px;
+.massInput::-webkit-outer-spin-button,
+.massInput::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
+
+.unit{ font-size:12px; color:#c9c9c9; }
+.subvalue{ font-size:12px; color:#c9c9c9; text-align:right; }
+
+/* price card */
+.priceCard{
+  margin-top:14px;
+  background:#1e1e1e;
+  border:1px solid #444;
+  border-radius:12px;
+  padding:12px;
 }
 
-#buySection .contact {
-  margin-top: 12px;
+.priceHeader{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.priceTitle{ margin:0; font-size:16px; font-weight:800; letter-spacing:.2px; }
+
+.controls{
+  display:flex;
+  justify-content:center;
+  margin-bottom:10px;
 }
 
-#buySection .contact a {
-  display: inline-block;
-  padding: 8px 16px;
-  color: #f5c76a;
-  border: 1px solid #f5c76a;
-  border-radius: 12px;
-  text-decoration: none;
-  cursor: pointer;
+.cur{
+  background:transparent;
+  border:1px solid #f5c76a;
+  color:#f5c76a;
+  padding:6px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:13px;
+  line-height:1;
 }
 
-/* ========== TERMS MODAL ========== */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.reset{
+  border-color:#aaa;
+  color:#ddd;
 }
 
-.modal-box {
-  background: #111;
-  padding: 16px 20px;
-  border-radius: 12px;
-  border: 1px solid #444;
-  max-width: 360px;
-  width: 90%;
+.price-line{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-top:4px;
 }
 
-.modal-box h3 {
-  color: #f5c76a;
-  margin-bottom: 10px;
-  font-size: 18px;
-  text-align: center;
+.total{
+  font-size:15px;
+  font-weight:bold;
+  margin-top:8px;
 }
 
-.modal-box p {
-  font-size: 13px;
-  color: #ddd;
-  line-height: 1.4;
-  margin-bottom: 14px;
-  text-align: center;
+.liveBottom{
+  margin-top:10px;
+  padding-top:6px;
+  border-top:1px solid #333;
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  font-size:11px;
+  color:#c9c9c9;
+  white-space:nowrap;
 }
 
-.modal-box button {
-  background: transparent;
-  border: 1px solid #f5c76a;
-  color: #f5c76a;
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  display: block;
-  margin: 0 auto;
+.liveValue{ color:#f5c76a; font-weight:600; }
+
+/* BUY GOLD */
+.buyHeader{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+.buyTitle{ margin:0; }
+.badge{
+  font-size:11px;
+  color:#1e1e1e;
+  background:#f5c76a;
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.gateBox{
+  border:1px solid rgba(245,199,106,.55);
+  background:rgba(245,199,106,.06);
+  border-radius:12px;
+  padding:10px;
+  margin-bottom:12px;
+}
+.gateTitle{ font-weight:800; font-size:13px; margin-bottom:4px; }
+.gateText{ color:#c9c9c9; font-size:12px; line-height:1.35; }
+
+.buyCard{
+  background:#1e1e1e;
+  border:1px solid #444;
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:12px;
+}
+.buyRow{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:13px;
+  margin-bottom:6px;
+}
+.buyLabel{ color:#c9c9c9; }
+.buyValue{ font-weight:800; }
+.buyNote{
+  margin-top:8px;
+  font-size:12px;
+  color:#c9c9c9;
+  line-height:1.35;
+}
+
+.contactBox{
+  background:#1e1e1e;
+  border:1px solid #444;
+  border-radius:12px;
+  padding:12px;
+}
+.contactTitle{ font-weight:900; margin-bottom:10px; }
+.contactButtons{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.cbtn{
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #f5c76a;
+  color:#f5c76a;
+  padding:8px 14px;
+  border-radius:10px;
+  font-weight:800;
+}
+.cbtn:hover{ background:rgba(245,199,106,.10); }
+.cbtn.outline{ border-color:#aaa; color:#ddd; }
+.contactHint{ margin-top:10px; font-size:12px; color:#c9c9c9; text-align:center; }
+
+/* MODAL */
+.modal{ position:fixed; inset:0; display:none; z-index:9999; }
+.modal.show{ display:block; }
+.modalOverlay{
+  position:absolute; inset:0;
+  background:rgba(0,0,0,.55);
+}
+.modalCard{
+  position:absolute;
+  left:50%; top:50%;
+  transform:translate(-50%,-50%);
+  width:min(420px, calc(100% - 24px));
+  background:#1e1e1e;
+  border:1px solid rgba(245,199,106,.45);
+  border-radius:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,.55);
+  overflow:hidden;
+}
+.modalHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 12px 10px;
+  border-bottom:1px solid #2a2a2a;
+}
+.modalTitle{ font-weight:900; }
+.modalClose{
+  background:transparent;
+  border:1px solid rgba(245,199,106,.55);
+  color:#f5c76a;
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:18px;
+  line-height:1;
+}
+.modalBody{
+  padding:12px;
+  color:#e7e7e7;
+  font-size:13px;
+  line-height:1.45;
+}
+.modalBody b{ color:#f5c76a; }
+.modalFoot{
+  padding:10px 12px 12px;
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  border-top:1px solid #2a2a2a;
 }
